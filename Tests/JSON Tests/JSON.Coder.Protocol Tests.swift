@@ -1,4 +1,4 @@
-import Either_Primitives
+import Either
 import Testing
 
 @testable import JSON

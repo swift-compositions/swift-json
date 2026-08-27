@@ -1,4 +1,4 @@
-public import Coder_Primitives
+public import Coder
 public import Foundation
 public import JSON
 
@@ -11,7 +11,7 @@ extension JSON.Foundation {
     }
 }
 
-extension JSON.Foundation.Coder: Coder_Primitives.Coder.`Protocol` {
+extension JSON.Foundation.Coder: Coder.Coder.`Protocol` {
     public typealias Input = Data
     public typealias Buffer = Data
     public typealias Output = Value

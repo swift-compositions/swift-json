@@ -1,4 +1,4 @@
-public import ASCII_Primitives
+public import ASCII
 public import RFC_8259
 
 extension JSON.Encode {

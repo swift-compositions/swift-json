@@ -1,14 +1,14 @@
-@_spi(Unsafe) public import Array_Primitives
+@_spi(Unsafe) public import Array
 public import Array_Small_Primitive
 public import Buffer_Linear_Primitive
-public import Buffer_Linear_Primitives
+public import Buffer_Linear
 import Buffer_Primitive
 public import Byte_Primitive
-public import Index_Primitives
+public import Index
 public import Memory_Allocator_Primitive
-public import Memory_Small_Primitives
+public import Memory_Small
 public import RFC_8259
-public import Storage_Contiguous_Primitives
+public import Storage_Contiguous
 import Storage_Primitive
 
 @usableFromInline

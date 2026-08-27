@@ -21,96 +21,96 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swift-ietf/swift-rfc-8259.git", branch: "main"),
         .package(
-            url: "https://github.com/swift-primitives/swift-parser-primitives.git",
+            url: "https://github.com/swift-molecules/swift-parser.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-array-primitives.git",
+            url: "https://github.com/swift-molecules/swift-array.git",
             branch: "main"
         ),
 
         .package(
-            url: "https://github.com/swift-primitives/swift-buffer-primitives.git",
+            url: "https://github.com/swift-molecules/swift-buffer.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-buffer-linear-primitives.git",
+            url: "https://github.com/swift-molecules/swift-buffer-linear.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-storage-primitives.git",
+            url: "https://github.com/swift-molecules/swift-storage.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-memory-allocation-primitives.git",
+            url: "https://github.com/swift-molecules/swift-memory-allocation.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-memory-small-primitives.git",
+            url: "https://github.com/swift-molecules/swift-memory-small.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-byte-primitives.git",
+            url: "https://github.com/swift-molecules/swift-byte.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-index-primitives.git",
+            url: "https://github.com/swift-molecules/swift-index.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-ascii-primitives.git",
+            url: "https://github.com/swift-molecules/swift-ascii.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-ascii-parser-primitives.git",
+            url: "https://github.com/swift-molecules/swift-ascii-parser.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-coder-primitives.git",
+            url: "https://github.com/swift-molecules/swift-coder.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-either-primitives.git",
+            url: "https://github.com/swift-molecules/swift-either.git",
             branch: "main"
         ),
-        .package(url: "https://github.com/swift-foundations/swift-async.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-async.git", branch: "main"),
     ],
     targets: [
         .target(
             name: "JSON",
             dependencies: [
                 .product(name: "RFC 8259", package: "swift-rfc-8259"),
-                .product(name: "Parser Error Primitives", package: "swift-parser-primitives"),
-                .product(name: "Array Primitives", package: "swift-array-primitives"),
-                .product(name: "Array Small Primitive", package: "swift-array-primitives"),
-                .product(name: "Buffer Primitive", package: "swift-buffer-primitives"),
+                .product(name: "Parser Error", package: "swift-parser"),
+                .product(name: "Array", package: "swift-array"),
+                .product(name: "Array Small Primitive", package: "swift-array"),
+                .product(name: "Buffer Primitive", package: "swift-buffer"),
                 .product(
                     name: "Buffer Linear Primitive",
-                    package: "swift-buffer-linear-primitives"
+                    package: "swift-buffer-linear"
                 ),
                 .product(
-                    name: "Buffer Linear Primitives",
-                    package: "swift-buffer-linear-primitives"
+                    name: "Buffer Linear",
+                    package: "swift-buffer-linear"
                 ),
-                .product(name: "Storage Primitive", package: "swift-storage-primitives"),
+                .product(name: "Storage Primitive", package: "swift-storage"),
                 .product(
-                    name: "Storage Contiguous Primitives",
-                    package: "swift-storage-primitives"
+                    name: "Storage Contiguous",
+                    package: "swift-storage"
                 ),
                 .product(
                     name: "Memory Allocator Primitive",
-                    package: "swift-memory-allocation-primitives"
+                    package: "swift-memory-allocation"
                 ),
-                .product(name: "Memory Small Primitives", package: "swift-memory-small-primitives"),
-                .product(name: "Byte Primitive", package: "swift-byte-primitives"),
-                .product(name: "Index Primitives", package: "swift-index-primitives"),
-                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
+                .product(name: "Memory Small", package: "swift-memory-small"),
+                .product(name: "Byte Primitive", package: "swift-byte"),
+                .product(name: "Index", package: "swift-index"),
+                .product(name: "ASCII", package: "swift-ascii"),
                 .product(
-                    name: "ASCII Decimal Parser Primitives",
-                    package: "swift-ascii-parser-primitives"
+                    name: "ASCII Decimal Parser",
+                    package: "swift-ascii-parser"
                 ),
-                .product(name: "Coder Primitives", package: "swift-coder-primitives"),
-                .product(name: "Either Primitives", package: "swift-either-primitives"),
+                .product(name: "Coder", package: "swift-coder"),
+                .product(name: "Either", package: "swift-either"),
                 .product(name: "Async", package: "swift-async"),
             ]
         ),
@@ -118,7 +118,7 @@ let package = Package(
             name: "JSON Foundation Integration",
             dependencies: [
                 "JSON",
-                .product(name: "Coder Primitives", package: "swift-coder-primitives"),
+                .product(name: "Coder", package: "swift-coder"),
             ]
         ),
         .testTarget(

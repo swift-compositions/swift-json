@@ -1,15 +1,15 @@
-public import ASCII_Decimal_Parser_Primitives
-@_spi(Unsafe) public import Array_Primitives
+public import ASCII_Decimal_Parser
+@_spi(Unsafe) public import Array
 public import Buffer_Linear_Primitive
-public import Buffer_Linear_Primitives
+public import Buffer_Linear
 public import Buffer_Primitive
 public import Byte_Primitive
-public import Index_Primitives
-public import Lexer_Primitives
+public import Index
+public import Lexer
 public import Memory_Allocator_Primitive
-public import Memory_Small_Primitives
+public import Memory_Small
 public import RFC_8259
-public import Storage_Contiguous_Primitives
+public import Storage_Contiguous
 public import Storage_Primitive
 
 extension JSON.Decode {
@@ -18,7 +18,7 @@ extension JSON.Decode {
     @usableFromInline
     internal struct Implementation: ~Copyable, ~Escapable {
         @usableFromInline
-        internal var scanner: Lexer_Primitives.Lexer.Scanner
+        internal var scanner: Lexer.Lexer.Scanner
 
         @usableFromInline
         internal var depth: Int
@@ -32,7 +32,7 @@ extension JSON.Decode {
         @inlinable
         @_lifetime(borrow bytes)
         package init(_ bytes: borrowing Swift.Span<Byte>, maxDepth: Int) {
-            self.scanner = Lexer_Primitives.Lexer.Scanner(bytes)
+            self.scanner = Lexer.Lexer.Scanner(bytes)
             self.depth = 0
             self.maxDepth = maxDepth
             var scratch: [UInt8] = []
