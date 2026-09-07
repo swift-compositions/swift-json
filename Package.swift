@@ -80,7 +80,7 @@ let package = Package(
             name: "JSON",
             dependencies: [
                 .product(name: "RFC 8259", package: "swift-rfc-8259"),
-                .product(name: "Parser Error", package: "swift-parser"),
+                .product(name: "Parser", package: "swift-parser"),
                 .product(name: "Array", package: "swift-array"),
                 .product(name: "Array Small Primitive", package: "swift-array"),
                 .product(name: "Buffer Primitive", package: "swift-buffer"),
