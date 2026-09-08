@@ -19,6 +19,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-molecules/swift-storage-memory.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-8259.git", branch: "main"),
         .package(
             url: "https://github.com/swift-molecules/swift-parser.git",
@@ -30,7 +31,7 @@ let package = Package(
         ),
 
         .package(
-            url: "https://github.com/swift-molecules/swift-buffer.git",
+            url: "https://github.com/swift-atoms/swift-buffer.git",
             branch: "main"
         ),
         .package(
@@ -38,7 +39,7 @@ let package = Package(
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-molecules/swift-storage.git",
+            url: "https://github.com/swift-atoms/swift-storage.git",
             branch: "main"
         ),
         .package(
@@ -50,7 +51,7 @@ let package = Package(
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-molecules/swift-byte.git",
+            url: "https://github.com/swift-atoms/swift-byte.git",
             branch: "main"
         ),
         .package(
@@ -58,7 +59,7 @@ let package = Package(
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-molecules/swift-ascii.git",
+            url: "https://github.com/swift-atoms/swift-ascii.git",
             branch: "main"
         ),
         .package(
@@ -73,7 +74,7 @@ let package = Package(
             url: "https://github.com/swift-molecules/swift-either.git",
             branch: "main"
         ),
-        .package(url: "https://github.com/swift-compositions/swift-async.git", branch: "main"),
+        .package(url: "https://github.com/swift-molecules/swift-async-stream.git", branch: "main"),
     ],
     targets: [
         .target(
@@ -83,7 +84,7 @@ let package = Package(
                 .product(name: "Parser", package: "swift-parser"),
                 .product(name: "Array", package: "swift-array"),
                 .product(name: "Array Small Primitive", package: "swift-array"),
-                .product(name: "Buffer Primitive", package: "swift-buffer"),
+                .product(name: "Buffer", package: "swift-buffer"),
                 .product(
                     name: "Buffer Linear Primitive",
                     package: "swift-buffer-linear"
@@ -92,17 +93,17 @@ let package = Package(
                     name: "Buffer Linear",
                     package: "swift-buffer-linear"
                 ),
-                .product(name: "Storage Primitive", package: "swift-storage"),
+                .product(name: "Storage", package: "swift-storage"),
                 .product(
-                    name: "Storage Contiguous",
-                    package: "swift-storage"
+                    name: "Storage Memory",
+                    package: "swift-storage-memory"
                 ),
                 .product(
-                    name: "Memory Allocator Primitive",
+                    name: "Memory Allocator",
                     package: "swift-memory-allocation"
                 ),
                 .product(name: "Memory Small", package: "swift-memory-small"),
-                .product(name: "Byte Primitive", package: "swift-byte"),
+                .product(name: "Byte", package: "swift-byte"),
                 .product(name: "Index", package: "swift-index"),
                 .product(name: "ASCII", package: "swift-ascii"),
                 .product(
@@ -111,7 +112,7 @@ let package = Package(
                 ),
                 .product(name: "Coder", package: "swift-coder"),
                 .product(name: "Either", package: "swift-either"),
-                .product(name: "Async", package: "swift-async"),
+                .product(name: "Async Stream", package: "swift-async-stream"),
             ]
         ),
         .target(

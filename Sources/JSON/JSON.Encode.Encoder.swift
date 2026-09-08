@@ -25,23 +25,23 @@ extension JSON.Encode {
 
 extension JSON.Encode.Encoder {
 
-    @usableFromInline static let keywordNull: [UInt8] = [.ascii.n, .ascii.u, .ascii.l, .ascii.l]
-    @usableFromInline static let keywordTrue: [UInt8] = [.ascii.t, .ascii.r, .ascii.u, .ascii.e]
+    @usableFromInline static let keywordNull: [UInt8] = [ASCII.Code.n.underlying, ASCII.Code.u.underlying, ASCII.Code.l.underlying, ASCII.Code.l.underlying]
+    @usableFromInline static let keywordTrue: [UInt8] = [ASCII.Code.t.underlying, ASCII.Code.r.underlying, ASCII.Code.u.underlying, ASCII.Code.e.underlying]
     @usableFromInline static let keywordFalse: [UInt8] = [
-        .ascii.f, .ascii.a, .ascii.l, .ascii.s, .ascii.e,
+        ASCII.Code.f.underlying, ASCII.Code.a.underlying, ASCII.Code.l.underlying, ASCII.Code.s.underlying, ASCII.Code.e.underlying,
     ]
 
-    @usableFromInline static let escapeQuote: [UInt8] = [.ascii.reverseSlant, .ascii.quotationMark]
+    @usableFromInline static let escapeQuote: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.quotationMark.underlying]
     @usableFromInline static let escapeBackslash: [UInt8] = [
-        .ascii.reverseSlant, .ascii.reverseSlant,
+        ASCII.Code.reverseSlant.underlying, ASCII.Code.reverseSlant.underlying,
     ]
-    @usableFromInline static let escapeSlash: [UInt8] = [.ascii.reverseSlant, .ascii.solidus]
-    @usableFromInline static let escapeBackspace: [UInt8] = [.ascii.reverseSlant, .ascii.b]
-    @usableFromInline static let escapeFormfeed: [UInt8] = [.ascii.reverseSlant, .ascii.f]
-    @usableFromInline static let escapeNewline: [UInt8] = [.ascii.reverseSlant, .ascii.n]
-    @usableFromInline static let escapeCarriageReturn: [UInt8] = [.ascii.reverseSlant, .ascii.r]
-    @usableFromInline static let escapeTab: [UInt8] = [.ascii.reverseSlant, .ascii.t]
-    @usableFromInline static let escapeUnicodePrefix: [UInt8] = [.ascii.reverseSlant, .ascii.u]
+    @usableFromInline static let escapeSlash: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.solidus.underlying]
+    @usableFromInline static let escapeBackspace: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.b.underlying]
+    @usableFromInline static let escapeFormfeed: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.f.underlying]
+    @usableFromInline static let escapeNewline: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.n.underlying]
+    @usableFromInline static let escapeCarriageReturn: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.r.underlying]
+    @usableFromInline static let escapeTab: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.t.underlying]
+    @usableFromInline static let escapeUnicodePrefix: [UInt8] = [ASCII.Code.reverseSlant.underlying, ASCII.Code.u.underlying]
 
     @usableFromInline static let indent1: [UInt8] = Swift.Array("  ".utf8)
     @usableFromInline static let indent2: [UInt8] = Swift.Array("    ".utf8)
@@ -90,14 +90,14 @@ extension JSON.Encode.Encoder {
         _ string: String,
         into buffer: inout Buffer
     ) where Buffer.Element == UInt8 {
-        buffer.append(.ascii.quotationMark)
+        buffer.append(ASCII.Code.quotationMark.underlying)
 
         var mutableString = string
         mutableString.withUTF8 { utf8 in
             unsafe _escapeUTF8(utf8, escapeSlashes: options.escapeSlashes, into: &buffer)
         }
 
-        buffer.append(.ascii.quotationMark)
+        buffer.append(ASCII.Code.quotationMark.underlying)
     }
 
     @unsafe
@@ -207,7 +207,7 @@ extension JSON.Encode.Encoder {
         _ array: RFC_8259.Array,
         into buffer: inout Buffer
     ) throws(JSON.Encode.Error) where Buffer.Element == UInt8 {
-        buffer.append(.ascii.leftBracket)
+        buffer.append(ASCII.Code.leftBracket.underlying)
 
         guard depth < options.maxDepth else {
             throw .depthExceeded(maxDepth: options.maxDepth)
@@ -217,12 +217,12 @@ extension JSON.Encode.Encoder {
         var first = true
         for element in array {
             if !first {
-                buffer.append(.ascii.comma)
+                buffer.append(ASCII.Code.comma.underlying)
             }
             first = false
 
             if options.prettyPrint {
-                buffer.append(.ascii.lf)
+                buffer.append(ASCII.Code.lf.underlying)
                 appendIndent(into: &buffer)
             }
 
@@ -232,11 +232,11 @@ extension JSON.Encode.Encoder {
         depth -= 1
 
         if !array.isEmpty && options.prettyPrint {
-            buffer.append(.ascii.lf)
+            buffer.append(ASCII.Code.lf.underlying)
             appendIndent(into: &buffer)
         }
 
-        buffer.append(.ascii.rightBracket)
+        buffer.append(ASCII.Code.rightBracket.underlying)
     }
 
     @inlinable
@@ -244,7 +244,7 @@ extension JSON.Encode.Encoder {
         _ object: RFC_8259.Object,
         into buffer: inout Buffer
     ) throws(JSON.Encode.Error) where Buffer.Element == UInt8 {
-        buffer.append(.ascii.leftBrace)
+        buffer.append(ASCII.Code.leftBrace.underlying)
 
         guard depth < options.maxDepth else {
             throw .depthExceeded(maxDepth: options.maxDepth)
@@ -258,29 +258,29 @@ extension JSON.Encode.Encoder {
             for (key, value) in object.sorted(by: {
                 $0.key.utf8.lexicographicallyPrecedes($1.key.utf8)
             }) {
-                if !first { buffer.append(.ascii.comma) }
+                if !first { buffer.append(ASCII.Code.comma.underlying) }
                 first = false
                 if options.prettyPrint {
-                    buffer.append(.ascii.lf)
+                    buffer.append(ASCII.Code.lf.underlying)
                     appendIndent(into: &buffer)
                 }
                 encodeString(key, into: &buffer)
-                buffer.append(.ascii.colon)
-                if options.prettyPrint { buffer.append(.ascii.sp) }
+                buffer.append(ASCII.Code.colon.underlying)
+                if options.prettyPrint { buffer.append(ASCII.Code.sp.underlying) }
                 try encode(value, into: &buffer)
             }
         } else {
 
             for (key, value) in object {
-                if !first { buffer.append(.ascii.comma) }
+                if !first { buffer.append(ASCII.Code.comma.underlying) }
                 first = false
                 if options.prettyPrint {
-                    buffer.append(.ascii.lf)
+                    buffer.append(ASCII.Code.lf.underlying)
                     appendIndent(into: &buffer)
                 }
                 encodeString(key, into: &buffer)
-                buffer.append(.ascii.colon)
-                if options.prettyPrint { buffer.append(.ascii.sp) }
+                buffer.append(ASCII.Code.colon.underlying)
+                if options.prettyPrint { buffer.append(ASCII.Code.sp.underlying) }
                 try encode(value, into: &buffer)
             }
         }
@@ -288,11 +288,11 @@ extension JSON.Encode.Encoder {
         depth -= 1
 
         if !object.isEmpty && options.prettyPrint {
-            buffer.append(.ascii.lf)
+            buffer.append(ASCII.Code.lf.underlying)
             appendIndent(into: &buffer)
         }
 
-        buffer.append(.ascii.rightBrace)
+        buffer.append(ASCII.Code.rightBrace.underlying)
     }
 
     @inlinable
@@ -300,7 +300,7 @@ extension JSON.Encode.Encoder {
         into buffer: inout Buffer
     ) where Buffer.Element == UInt8 {
 
-        if indent.count == 2 && indent[0] == .ascii.sp && indent[1] == .ascii.sp {
+        if indent.count == 2 && indent[0] == ASCII.Code.sp.underlying && indent[1] == ASCII.Code.sp.underlying {
             switch depth {
             case 0: return
             case 1: buffer.append(contentsOf: Self.indent1)

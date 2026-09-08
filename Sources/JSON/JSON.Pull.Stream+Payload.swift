@@ -2,14 +2,14 @@
 public import Array_Small_Primitive
 public import Buffer_Linear_Primitive
 public import Buffer_Linear
-import Buffer_Primitive
-public import Byte_Primitive
+import Buffer
+public import Byte
 public import Index
-public import Memory_Allocator_Primitive
+public import Memory_Allocator
 public import Memory_Small
 public import RFC_8259
-public import Storage_Contiguous
-import Storage_Primitive
+public import Storage_Memory
+import Storage
 
 @usableFromInline
 typealias SmallByteArray = Array<Byte>.Small<24>
@@ -59,7 +59,7 @@ package func _lexString(
             continue
         }
 
-        let code = ASCII.Code(unchecked: byte)
+        let code = ASCII.Code(byte)
         switch code {
         case .quotationMark:
             scanner.advance()
@@ -116,14 +116,14 @@ package func _lexEscape(
     }
     scanner.advance()
     switch code {
-    case .quotationMark: return [.ascii.quotationMark]
-    case .reverseSlant: return [.ascii.reverseSlant]
-    case .solidus: return [.ascii.solidus]
-    case .b: return [.ascii.bs]
-    case .f: return [.ascii.ff]
-    case .n: return [.ascii.lf]
-    case .r: return [.ascii.cr]
-    case .t: return [.ascii.htab]
+    case .quotationMark: return [ASCII.Code.quotationMark.underlying]
+    case .reverseSlant: return [ASCII.Code.reverseSlant.underlying]
+    case .solidus: return [ASCII.Code.solidus.underlying]
+    case .b: return [ASCII.Code.bs.underlying]
+    case .f: return [ASCII.Code.ff.underlying]
+    case .n: return [ASCII.Code.lf.underlying]
+    case .r: return [ASCII.Code.cr.underlying]
+    case .t: return [ASCII.Code.htab.underlying]
     case .u: return try _lexUnicodeEscape(scanner: &scanner)
 
     default:
