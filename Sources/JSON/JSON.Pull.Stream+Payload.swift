@@ -8,7 +8,7 @@ public import Index
 public import Memory_Allocator
 public import Memory_Small
 public import RFC_8259
-public import Storage_Memory
+public import Storage
 import Storage
 
 @usableFromInline
