@@ -17,7 +17,7 @@ extension JSON.Decode {
     @usableFromInline
     internal struct Implementation: ~Copyable, ~Escapable {
         @usableFromInline
-        internal var scanner: Lexer.Lexer.Scanner
+        internal var scanner: Lexer::Lexer.Scanner
 
         @usableFromInline
         internal var depth: Int
@@ -31,7 +31,7 @@ extension JSON.Decode {
         @inlinable
         @_lifetime(borrow bytes)
         package init(_ bytes: borrowing Swift.Span<Byte>, maxDepth: Int) {
-            self.scanner = Lexer.Lexer.Scanner(bytes)
+            self.scanner = Lexer::Lexer.Scanner(bytes)
             self.depth = 0
             self.maxDepth = maxDepth
             var scratch: [UInt8] = []

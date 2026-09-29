@@ -21,7 +21,7 @@ extension JSON {
     }
 }
 
-extension JSON.Coder: Coder.Coder.`Protocol` {
+extension JSON.Coder: Coder::Coder.`Protocol` {
     public typealias Input = Swift.Span<Byte>
     public typealias Buffer = [UInt8]
     public typealias Output = RFC_8259.Value
@@ -56,7 +56,7 @@ extension JSON.Coder: Coder.Coder.`Protocol` {
     }
 }
 
-extension RFC_8259.Value: @retroactive Coder.Coder.Codable {
+extension RFC_8259.Value: @retroactive Coder::Coder.Codable {
 
     public typealias Coder = JSON.Coder
 
