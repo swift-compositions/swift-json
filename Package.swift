@@ -42,7 +42,7 @@ let package = Package(
             branch: "main", traits: ["Generational", "Memory"]),
         .package(
             url: "https://github.com/swift-molecules/swift-memory-allocation.git",
-            branch: "main", traits: ["MemorySmall"]),
+            branch: "main", traits: ["MemorySmall", "MemoryAllocatorArena", "MemoryInline"]),
         .package(
             url: "https://github.com/swift-atoms/swift-byte.git",
             branch: "main"
