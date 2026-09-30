@@ -8,7 +8,7 @@ extension JSON.Assemble {
 
         @Test
         func `Assemble.from short-circuits at position 0 and returns parsed value`() throws {
-            let bytes: [Byte] = #"{"name":"alice","age":30,"tags":["x","y"]}"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"name":"alice","age":30,"tags":["x","y"]}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -30,7 +30,7 @@ extension JSON.Assemble {
         @Test
         func `Assemble.from slow path after partial advance rebuilds via events`() throws {
 
-            let bytes: [Byte] = #"[1,2,3]"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"[1,2,3]"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -46,7 +46,7 @@ extension JSON.Assemble {
 
         @Test
         func `Assemble.from on null produces .null value`() throws {
-            let bytes: [Byte] = "null".utf8.map(Byte.init)
+            let bytes: [Byte] = "null".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -59,7 +59,7 @@ extension JSON.Assemble {
         @Test
         func `Assemble.from output matches public JSON.Decode.parse output`() throws {
 
-            let bytes: [Byte] = #"{"a":1,"b":[true,null,"s"]}"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"a":1,"b":[true,null,"s"]}"#.utf8.map(Byte.init(bitPattern:))
             let direct = try JSON.Decode.parse(bytes)
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in

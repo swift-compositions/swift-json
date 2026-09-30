@@ -1,4 +1,3 @@
-import Foundation
 import JSON
 import Testing
 
@@ -10,25 +9,22 @@ extension JSON.Foundation {
         @Test
         func `default codec preserves Foundation wire format and consumes input`() throws {
             let coder = JSON.Foundation.Coder<[String: String]>()
-            var input = Data(#"{"value":"blob"}"#.utf8)
 
-            let value = try coder.parse(&input)
+            let parsed = try FoundationFixture.parse(coder, #"{"value":"blob"}"#)
 
-            #expect(value == ["value": "blob"])
-            #expect(input.isEmpty)
+            #expect(parsed.value == ["value": "blob"])
+            #expect(parsed.remaining == 0)
 
-            var output = Data()
-            try coder.serialize(value, into: &output)
-            #expect(output == Data(#"{"value":"blob"}"#.utf8))
+            let output = try FoundationFixture.serialize(coder, parsed.value)
+            #expect(output == Array(#"{"value":"blob"}"#.utf8))
         }
 
         @Test
         func `decode failure has the typed owner error`() {
             let coder = JSON.Foundation.Coder<[String: String]>()
-            var input = Data("{".utf8)
 
             do throws(JSON.Foundation.Error) {
-                _ = try coder.parse(&input)
+                _ = try FoundationFixture.parse(coder, "{")
                 Issue.record("Expected malformed JSON to fail")
             } catch {
                 #expect(error == .decoding)
@@ -38,10 +34,9 @@ extension JSON.Foundation {
         @Test
         func `encode failure has the typed owner error`() {
             let coder = JSON.Foundation.Coder<Double>()
-            var output = Data()
 
             do throws(JSON.Foundation.Error) {
-                try coder.serialize(.nan, into: &output)
+                _ = try FoundationFixture.serialize(coder, .nan)
                 Issue.record("Expected nonconforming floating-point value to fail")
             } catch {
                 #expect(error == .encoding)

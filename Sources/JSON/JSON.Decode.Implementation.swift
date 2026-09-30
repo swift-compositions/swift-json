@@ -87,7 +87,7 @@ extension JSON.Decode.Implementation {
     package mutating func parseValue() throws(RFC_8259.Error) -> RFC_8259.Value {
         skipWhitespace()
 
-        guard let code: ASCII.Code = scanner.peek() else {
+        guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
             throw .unexpectedEndOfInput(at: currentPosition(), expected: .value)
         }
 
@@ -147,7 +147,7 @@ extension JSON.Decode.Implementation {
 
         skipWhitespace()
 
-        if let code: ASCII.Code = scanner.peek(), code == .rightBracket {
+        if let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code == .rightBracket {
             scanner.advance()
             return .array(RFC_8259.Array(elements))
         }
@@ -157,7 +157,7 @@ extension JSON.Decode.Implementation {
         while true {
             skipWhitespace()
 
-            guard let code: ASCII.Code = scanner.peek() else {
+            guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
                 throw .unexpectedEndOfInput(at: currentPosition(), expected: .arrayEnd)
             }
             switch code {
@@ -194,7 +194,7 @@ extension JSON.Decode.Implementation {
 
         skipWhitespace()
 
-        if let code: ASCII.Code = scanner.peek(), code == .rightBrace {
+        if let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code == .rightBrace {
             scanner.advance()
             return .object(RFC_8259.Object(members))
         }
@@ -204,7 +204,7 @@ extension JSON.Decode.Implementation {
         while true {
             skipWhitespace()
 
-            guard let code: ASCII.Code = scanner.peek() else {
+            guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
                 throw .unexpectedEndOfInput(at: currentPosition(), expected: .objectEnd)
             }
             switch code {
@@ -233,7 +233,7 @@ extension JSON.Decode.Implementation {
     ) {
         skipWhitespace()
 
-        guard let firstCode: ASCII.Code = scanner.peek() else {
+        guard let firstCode = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
             throw .unexpectedEndOfInput(at: currentPosition(), expected: .objectKey)
         }
         guard firstCode == .quotationMark else {
@@ -246,7 +246,7 @@ extension JSON.Decode.Implementation {
         let key = try lexStringValue()
 
         skipWhitespace()
-        guard let colonCode: ASCII.Code = scanner.peek() else {
+        guard let colonCode = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
             throw .unexpectedEndOfInput(at: currentPosition(), expected: .colon)
         }
         guard colonCode == .colon else {
@@ -270,7 +270,7 @@ extension JSON.Decode.Implementation {
     package mutating func skipWhitespace() {
         while let byte = scanner.peek() {
 
-            switch byte {
+            switch byte.bitPattern {
             case 0x20, 0x09, 0x0A, 0x0D:
                 scanner.advance()
 
@@ -289,7 +289,7 @@ extension JSON.Decode.Implementation {
         let startCursor = scanner.position
         for expectedCode in expected {
 
-            guard let code: ASCII.Code = scanner.peek() else {
+            guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
                 throw .unexpectedEndOfInput(
                     at: currentPosition(),
                     expected: .value
@@ -328,7 +328,7 @@ extension JSON.Decode.Implementation {
                 continue
             }
 
-            let code = ASCII.Code(byte)
+            let code = ASCII.Code(unchecked: byte)
             switch code {
             case .quotationMark:
                 scanner.advance()
@@ -373,7 +373,7 @@ extension JSON.Decode.Implementation {
     @_lifetime(self: copy self)
     package mutating func lexEscapeSequence() throws(RFC_8259.Error) -> [UInt8] {
 
-        guard let code: ASCII.Code = scanner.peek() else {
+        guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
             throw .unexpectedEndOfInput(at: currentPosition(), expected: .value)
         }
 
@@ -402,7 +402,7 @@ extension JSON.Decode.Implementation {
         hex.reserveCapacity(4)
 
         for _ in 0..<4 {
-            guard let code: ASCII.Code = scanner.peek() else {
+            guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
                 throw .invalidString(at: currentPosition(), reason: .invalidUnicodeEscape)
             }
             guard code.isHexDigit else {
@@ -417,11 +417,11 @@ extension JSON.Decode.Implementation {
         }
 
         if codePoint >= 0xD800 && codePoint <= 0xDBFF {
-            guard let rs: ASCII.Code = scanner.peek(), rs == .reverseSlant else {
+            guard let rs = scanner.peek().map(ASCII.Code.init(unchecked:)), rs == .reverseSlant else {
                 throw .invalidString(at: currentPosition(), reason: .invalidUnicodeEscape)
             }
             scanner.advance()
-            guard let u: ASCII.Code = scanner.peek(), u == .u else {
+            guard let u = scanner.peek().map(ASCII.Code.init(unchecked:)), u == .u else {
                 throw .invalidString(at: currentPosition(), reason: .invalidUnicodeEscape)
             }
             scanner.advance()
@@ -429,7 +429,7 @@ extension JSON.Decode.Implementation {
             var lowHex: [ASCII.Code] = []
             lowHex.reserveCapacity(4)
             for _ in 0..<4 {
-                guard let code: ASCII.Code = scanner.peek(), code.isHexDigit else {
+                guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isHexDigit else {
                     throw .invalidString(at: currentPosition(), reason: .invalidUnicodeEscape)
                 }
                 lowHex.append(code)
@@ -475,11 +475,11 @@ extension JSON.Decode.Implementation {
         let startCursor = scanner.position
         var bytes = SmallByteArray(initialCapacity: Index<Byte>.Count(UInt(24)))
 
-        if let b: ASCII.Code = scanner.peek(), b == .hyphen {
+        if let b = scanner.peek().map(ASCII.Code.init(unchecked:)), b == .hyphen {
             bytes.append(scanner.consume())
         }
 
-        guard let firstDigit: ASCII.Code = scanner.peek(), firstDigit.isDigit else {
+        guard let firstDigit = scanner.peek().map(ASCII.Code.init(unchecked:)), firstDigit.isDigit else {
             throw .invalidNumber(
                 at: position(at: startCursor),
                 reason: .missingDigits(context: "integer part")
@@ -489,52 +489,52 @@ extension JSON.Decode.Implementation {
         if firstDigit == .`0` {
             bytes.append(scanner.consume())
 
-            if let next: ASCII.Code = scanner.peek(), next.isDigit {
+            if let next = scanner.peek().map(ASCII.Code.init(unchecked:)), next.isDigit {
                 throw .invalidNumber(
                     at: position(at: startCursor),
                     reason: .leadingZeros
                 )
             }
         } else {
-            while let code: ASCII.Code = scanner.peek(), code.isDigit {
+            while let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isDigit {
                 bytes.append(scanner.consume())
             }
         }
 
         var isFloat = false
 
-        if let b: ASCII.Code = scanner.peek(), b == .period {
+        if let b = scanner.peek().map(ASCII.Code.init(unchecked:)), b == .period {
             isFloat = true
             bytes.append(scanner.consume())
 
-            guard let firstFracDigit: ASCII.Code = scanner.peek(), firstFracDigit.isDigit else {
+            guard let firstFracDigit = scanner.peek().map(ASCII.Code.init(unchecked:)), firstFracDigit.isDigit else {
                 throw .invalidNumber(
                     at: position(at: startCursor),
                     reason: .missingDigits(context: "fraction")
                 )
             }
 
-            while let code: ASCII.Code = scanner.peek(), code.isDigit {
+            while let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isDigit {
                 bytes.append(scanner.consume())
             }
         }
 
-        if let e: ASCII.Code = scanner.peek(), e == .e || e == .E {
+        if let e = scanner.peek().map(ASCII.Code.init(unchecked:)), e == .e || e == .E {
             isFloat = true
             bytes.append(scanner.consume())
 
-            if let sign: ASCII.Code = scanner.peek(), sign == .plusSign || sign == .hyphen {
+            if let sign = scanner.peek().map(ASCII.Code.init(unchecked:)), sign == .plusSign || sign == .hyphen {
                 bytes.append(scanner.consume())
             }
 
-            guard let firstExpDigit: ASCII.Code = scanner.peek(), firstExpDigit.isDigit else {
+            guard let firstExpDigit = scanner.peek().map(ASCII.Code.init(unchecked:)), firstExpDigit.isDigit else {
                 throw .invalidNumber(
                     at: position(at: startCursor),
                     reason: .missingDigits(context: "exponent")
                 )
             }
 
-            while let code: ASCII.Code = scanner.peek(), code.isDigit {
+            while let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isDigit {
                 bytes.append(scanner.consume())
             }
         }

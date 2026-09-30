@@ -9,7 +9,7 @@ extension JSON.Coder {
 
         @Test
         func `parse via Coder.Protocol surface returns RFC_8259.Value`() throws {
-            let bytes: [Byte] = "true".utf8.map(Byte.init)
+            let bytes: [Byte] = "true".utf8.map(Byte.init(bitPattern:))
             let coder = JSON.Coder()
             var span = bytes.span
             let value = try coder.parse(&span)
@@ -19,7 +19,7 @@ extension JSON.Coder {
 
         @Test
         func `parse via Coder.Protocol surface throws Either left on malformed JSON`() throws {
-            let bytes: [Byte] = "{not json".utf8.map(Byte.init)
+            let bytes: [Byte] = "{not json".utf8.map(Byte.init(bitPattern:))
             let coder = JSON.Coder()
             var span = bytes.span
             do throws(JSON.Coder.Failure) {
@@ -47,7 +47,7 @@ extension JSON.Coder {
 
         @Test
         func `round-trip via Coder.Protocol surface preserves value`() throws {
-            let inputBytes: [Byte] = "[1,2,3]".utf8.map(Byte.init)
+            let inputBytes: [Byte] = "[1,2,3]".utf8.map(Byte.init(bitPattern:))
             let coder = JSON.Coder()
 
             var inputSpan = inputBytes.span
@@ -56,7 +56,7 @@ extension JSON.Coder {
             var outputBuffer: [UInt8] = []
             try coder.serialize(parsed, into: &outputBuffer)
 
-            let outputBytes: [Byte] = outputBuffer.map(Byte.init)
+            let outputBytes: [Byte] = outputBuffer.map(Byte.init(bitPattern:))
             var outputSpan = outputBytes.span
             let reparsed = try coder.parse(&outputSpan)
 

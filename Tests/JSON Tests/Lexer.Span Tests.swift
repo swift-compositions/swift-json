@@ -8,7 +8,7 @@ extension JSON.Decode {
 
         @Test
         func `Span parses structural tokens via [Byte] path`() throws {
-            let bytes: [Byte] = "[{},[]]".utf8.map(Byte.init)
+            let bytes: [Byte] = "[{},[]]".utf8.map(Byte.init(bitPattern:))
             let value = try JSON.Decode.parse(bytes)
 
             #expect(value.array?.count == 2)

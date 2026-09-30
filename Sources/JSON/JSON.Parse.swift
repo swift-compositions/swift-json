@@ -106,23 +106,23 @@ extension JSON {
 extension JSON.Located {
 
     @inlinable
-    public func parse(_ string: String) throws(Parser.Error.Located<JSON.Error>) -> JSON {
+    public func parse(_ string: String) throws(JSON.Error.Located) -> JSON {
         do throws(RFC_8259.Error) {
             let value = try JSON.Decode.parse(string, maxDepth: maxDepth)
             return JSON(value)
         } catch let error {
-            throw Parser.Error.Located<JSON.Error>(JSON.Error(error), at: _offset(of: error))
+            throw JSON.Error.Located(JSON.Error(error), at: _offset(of: error))
         }
     }
 
     @inlinable
-    public func parse<Bytes>(_ bytes: Bytes) throws(Parser.Error.Located<JSON.Error>) -> JSON
+    public func parse<Bytes>(_ bytes: Bytes) throws(JSON.Error.Located) -> JSON
     where Bytes: Swift.Collection<Byte>, Bytes: Sendable, Bytes.Index: Sendable {
         do throws(RFC_8259.Error) {
             let value = try JSON.Decode.parse(bytes, maxDepth: maxDepth)
             return JSON(value)
         } catch let error {
-            throw Parser.Error.Located<JSON.Error>(JSON.Error(error), at: _offset(of: error))
+            throw JSON.Error.Located(JSON.Error(error), at: _offset(of: error))
         }
     }
 }

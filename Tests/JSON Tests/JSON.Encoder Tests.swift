@@ -185,7 +185,7 @@ extension JSON.Encoder {
             func `round-trips through serialized text`() throws {
                 let value = Outer(name: "text", inner: Inner(value: -7), list: [])
                 let bytes = JSON.Encode.encode(try JSON(encoding: value).raw)
-                #expect(try JSON.parse(bytes.map(Byte.init)).decode(Outer.self) == value)
+                #expect(try JSON.parse(bytes.map(Byte.init(bitPattern:))).decode(Outer.self) == value)
             }
         }
     }

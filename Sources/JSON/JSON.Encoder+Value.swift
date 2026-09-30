@@ -8,10 +8,10 @@ extension JSON.Encoder {
 
     internal func integer<T: FixedWidthInteger>(_ value: T) -> RFC_8259.Value {
         if let signed = Int64(exactly: value) {
-            return .number(RFC_8259.Number(signed, original: .init(Swift.Array(String(signed).utf8))))
+            return .number(RFC_8259.Number(signed, original: .init(String(signed).utf8.map(Byte.init(bitPattern:)))))
         }
         let unsigned = UInt64(value)
-        return .number(RFC_8259.Number(unsigned, original: .init(Swift.Array(String(unsigned).utf8))))
+        return .number(RFC_8259.Number(unsigned, original: .init(String(unsigned).utf8.map(Byte.init(bitPattern:)))))
     }
 
     internal func floating<T: BinaryFloatingPoint & LosslessStringConvertible>(
@@ -27,7 +27,7 @@ extension JSON.Encoder {
             )
         }
         let text = String(value)
-        return .number(RFC_8259.Number(Double(text) ?? Double(value), original: .init(Swift.Array(text.utf8))))
+        return .number(RFC_8259.Number(Double(text) ?? Double(value), original: .init(text.utf8.map(Byte.init(bitPattern:)))))
     }
 }
 

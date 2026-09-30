@@ -46,7 +46,7 @@ extension JSON.Decode {
         _ string: String,
         maxDepth: Int = 512
     ) throws(RFC_8259.Error) -> RFC_8259.Value {
-        let byteArray: [Byte] = string.utf8.map(Byte.init)
+        let byteArray = [Byte](utf8: string)
         return try parse(byteArray, maxDepth: maxDepth)
     }
 }
@@ -58,7 +58,7 @@ extension JSON.Decode {
         _ string: Substring,
         maxDepth: Int = 512
     ) throws(RFC_8259.Error) -> RFC_8259.Value {
-        let byteArray: [Byte] = string.utf8.map(Byte.init)
+        let byteArray: [Byte] = string.utf8.map(Byte.init(bitPattern:))
         return try parse(byteArray, maxDepth: maxDepth)
     }
 }

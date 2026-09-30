@@ -59,7 +59,7 @@ package func _lexString(
             continue
         }
 
-        let code = ASCII.Code(byte)
+        let code = ASCII.Code(unchecked: byte)
         switch code {
         case .quotationMark:
             scanner.advance()
@@ -108,7 +108,7 @@ package func _lexEscape(
     scanner: inout Lexer.Scanner
 ) throws(RFC_8259.Error) -> [UInt8] {
 
-    guard let code: ASCII.Code = scanner.peek() else {
+    guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
         throw .unexpectedEndOfInput(
             at: _position(at: scanner.position, scanner: scanner),
             expected: .value
@@ -142,7 +142,7 @@ package func _lexUnicodeEscape(
     hex.reserveCapacity(4)
 
     for _ in 0..<4 {
-        guard let code: ASCII.Code = scanner.peek() else {
+        guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
             throw .invalidString(
                 at: _position(at: scanner.position, scanner: scanner),
                 reason: .invalidUnicodeEscape
@@ -166,14 +166,14 @@ package func _lexUnicodeEscape(
     }
 
     if codePoint >= 0xD800 && codePoint <= 0xDBFF {
-        guard let rs: ASCII.Code = scanner.peek(), rs == .reverseSlant else {
+        guard let rs = scanner.peek().map(ASCII.Code.init(unchecked:)), rs == .reverseSlant else {
             throw .invalidString(
                 at: _position(at: scanner.position, scanner: scanner),
                 reason: .invalidUnicodeEscape
             )
         }
         scanner.advance()
-        guard let u: ASCII.Code = scanner.peek(), u == .u else {
+        guard let u = scanner.peek().map(ASCII.Code.init(unchecked:)), u == .u else {
             throw .invalidString(
                 at: _position(at: scanner.position, scanner: scanner),
                 reason: .invalidUnicodeEscape
@@ -184,7 +184,7 @@ package func _lexUnicodeEscape(
         var lowHex: [ASCII.Code] = []
         lowHex.reserveCapacity(4)
         for _ in 0..<4 {
-            guard let code: ASCII.Code = scanner.peek(), code.isHexDigit else {
+            guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isHexDigit else {
                 throw .invalidString(
                     at: _position(at: scanner.position, scanner: scanner),
                     reason: .invalidUnicodeEscape
@@ -240,11 +240,11 @@ package func _lexNumber(
     let startCursor = scanner.position
     var bytes = SmallByteArray(store: .init(minimumCapacity: Index<Byte>.Count(24)))
 
-    if let b: ASCII.Code = scanner.peek(), b == .hyphen {
+    if let b = scanner.peek().map(ASCII.Code.init(unchecked:)), b == .hyphen {
         bytes.append(scanner.consume())
     }
 
-    guard let firstDigit: ASCII.Code = scanner.peek(), firstDigit.isDigit else {
+    guard let firstDigit = scanner.peek().map(ASCII.Code.init(unchecked:)), firstDigit.isDigit else {
         throw .invalidNumber(
             at: _position(at: startCursor, scanner: scanner),
             reason: .missingDigits(context: "integer part")
@@ -252,47 +252,47 @@ package func _lexNumber(
     }
     if firstDigit == .`0` {
         bytes.append(scanner.consume())
-        if let next: ASCII.Code = scanner.peek(), next.isDigit {
+        if let next = scanner.peek().map(ASCII.Code.init(unchecked:)), next.isDigit {
             throw .invalidNumber(
                 at: _position(at: startCursor, scanner: scanner),
                 reason: .leadingZeros
             )
         }
     } else {
-        while let code: ASCII.Code = scanner.peek(), code.isDigit {
+        while let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isDigit {
             bytes.append(scanner.consume())
         }
     }
 
     var isFloat = false
 
-    if let b: ASCII.Code = scanner.peek(), b == .period {
+    if let b = scanner.peek().map(ASCII.Code.init(unchecked:)), b == .period {
         isFloat = true
         bytes.append(scanner.consume())
-        guard let firstFracDigit: ASCII.Code = scanner.peek(), firstFracDigit.isDigit else {
+        guard let firstFracDigit = scanner.peek().map(ASCII.Code.init(unchecked:)), firstFracDigit.isDigit else {
             throw .invalidNumber(
                 at: _position(at: startCursor, scanner: scanner),
                 reason: .missingDigits(context: "fraction")
             )
         }
-        while let code: ASCII.Code = scanner.peek(), code.isDigit {
+        while let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isDigit {
             bytes.append(scanner.consume())
         }
     }
 
-    if let e: ASCII.Code = scanner.peek(), e == .e || e == .E {
+    if let e = scanner.peek().map(ASCII.Code.init(unchecked:)), e == .e || e == .E {
         isFloat = true
         bytes.append(scanner.consume())
-        if let sign: ASCII.Code = scanner.peek(), sign == .plusSign || sign == .hyphen {
+        if let sign = scanner.peek().map(ASCII.Code.init(unchecked:)), sign == .plusSign || sign == .hyphen {
             bytes.append(scanner.consume())
         }
-        guard let firstExpDigit: ASCII.Code = scanner.peek(), firstExpDigit.isDigit else {
+        guard let firstExpDigit = scanner.peek().map(ASCII.Code.init(unchecked:)), firstExpDigit.isDigit else {
             throw .invalidNumber(
                 at: _position(at: startCursor, scanner: scanner),
                 reason: .missingDigits(context: "exponent")
             )
         }
-        while let code: ASCII.Code = scanner.peek(), code.isDigit {
+        while let code = scanner.peek().map(ASCII.Code.init(unchecked:)), code.isDigit {
             bytes.append(scanner.consume())
         }
     }

@@ -9,7 +9,7 @@ struct `Number Original` {
 }
 
 private func pullNumber(_ text: String) throws -> RFC_8259.Number {
-    let bytes: [Byte] = text.utf8.map(Byte.init)
+    let bytes: [Byte] = text.utf8.map(Byte.init(bitPattern:))
     return try bytes.withUnsafeBufferPointer {
         (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) -> RFC_8259.Number in
         let span = buf.span
@@ -20,7 +20,7 @@ private func pullNumber(_ text: String) throws -> RFC_8259.Number {
 }
 
 private func decodeNumber(_ text: String) throws -> RFC_8259.Number {
-    let bytes: [Byte] = text.utf8.map(Byte.init)
+    let bytes: [Byte] = text.utf8.map(Byte.init(bitPattern:))
     let value = try JSON.Decode.parse(bytes)
     guard case .number(let number) = value else {
         Issue.record("expected a number, got \(value)")

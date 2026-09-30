@@ -8,7 +8,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next emits objectStart and objectEnd for empty object`() throws {
-            let bytes: [Byte] = "{}".utf8.map(Byte.init)
+            let bytes: [Byte] = "{}".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -21,7 +21,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next emits arrayStart and arrayEnd for empty array`() throws {
-            let bytes: [Byte] = "[]".utf8.map(Byte.init)
+            let bytes: [Byte] = "[]".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -34,7 +34,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next emits comma colon string number sequence`() throws {
-            let bytes: [Byte] = #"{"a":1,"b":2}"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"a":1,"b":2}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -57,7 +57,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next emits null`() throws {
-            let bytes: [Byte] = "null".utf8.map(Byte.init)
+            let bytes: [Byte] = "null".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -69,7 +69,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next emits true`() throws {
-            let bytes: [Byte] = "true".utf8.map(Byte.init)
+            let bytes: [Byte] = "true".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -80,7 +80,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next emits false`() throws {
-            let bytes: [Byte] = "false".utf8.map(Byte.init)
+            let bytes: [Byte] = "false".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -91,7 +91,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `currentString decodes ASCII payload`() throws {
-            let bytes: [Byte] = #""hello""#.utf8.map(Byte.init)
+            let bytes: [Byte] = #""hello""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -103,7 +103,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `currentString decodes escape sequences`() throws {
-            let bytes: [Byte] = #""a\nb\tc\"d""#.utf8.map(Byte.init)
+            let bytes: [Byte] = #""a\nb\tc\"d""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -115,7 +115,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `currentString decodes unicode escape`() throws {
-            let bytes: [Byte] = #""é""#.utf8.map(Byte.init)
+            let bytes: [Byte] = #""é""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -128,7 +128,7 @@ extension RFC_8259.Pull.Tokens {
         @Test
         func `currentString decodes surrogate pair`() throws {
 
-            let bytes: [Byte] = #""😀""#.utf8.map(Byte.init)
+            let bytes: [Byte] = #""😀""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -140,7 +140,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `currentNumber decodes integer`() throws {
-            let bytes: [Byte] = "42".utf8.map(Byte.init)
+            let bytes: [Byte] = "42".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -152,7 +152,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `currentNumber decodes negative integer`() throws {
-            let bytes: [Byte] = "-123".utf8.map(Byte.init)
+            let bytes: [Byte] = "-123".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -164,7 +164,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `currentNumber decodes floating point`() throws {
-            let bytes: [Byte] = "3.14".utf8.map(Byte.init)
+            let bytes: [Byte] = "3.14".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -176,7 +176,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `currentNumber decodes scientific notation`() throws {
-            let bytes: [Byte] = "1.5e10".utf8.map(Byte.init)
+            let bytes: [Byte] = "1.5e10".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -188,7 +188,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `isPristine true at init`() throws {
-            let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
                 let span = buf.span
                 let stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
@@ -198,7 +198,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `isPristine false after next`() throws {
-            let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -211,7 +211,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `isPristine false after skipValue`() throws {
-            let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -224,7 +224,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `skipValue skips a string`() throws {
-            let bytes: [Byte] = #""skip me",42"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #""skip me",42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -238,7 +238,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `skipValue skips a number`() throws {
-            let bytes: [Byte] = #"3.14,"after""#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"3.14,"after""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -252,7 +252,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `skipValue skips a literal`() throws {
-            let bytes: [Byte] = #"null,true,false,42"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"null,true,false,42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -270,7 +270,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `skipValue skips a nested object`() throws {
-            let bytes: [Byte] = #"{"nested":{"a":1,"b":[1,2,3]}},42"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"nested":{"a":1,"b":[1,2,3]}},42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -285,7 +285,7 @@ extension RFC_8259.Pull.Tokens {
         @Test
         func `skipValue inside object skips remaining members`() throws {
 
-            let bytes: [Byte] = #"{"a":1,"b":2,"c":3},42"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{"a":1,"b":2,"c":3},42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -317,7 +317,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `skipValue handles nested arrays`() throws {
-            let bytes: [Byte] = #"[[1,2],[3,[4,5]]],99"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"[[1,2],[3,[4,5]]],99"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -331,7 +331,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `skipValue handles escaped quote in string`() throws {
-            let bytes: [Byte] = #""skip \"this\" too",42"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #""skip \"this\" too",42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -345,7 +345,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `depth exceeded throws`() throws {
-            let bytes: [Byte] = "[[[[[]]]]]".utf8.map(Byte.init)
+            let bytes: [Byte] = "[[[[[]]]]]".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
                 let span = buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span, limit: 3)
@@ -369,7 +369,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `malformed null throws`() throws {
-            let bytes: [Byte] = "nulX".utf8.map(Byte.init)
+            let bytes: [Byte] = "nulX".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
                 let span = buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
@@ -391,7 +391,7 @@ extension RFC_8259.Pull.Tokens {
         @Test
         func `malformed number throws`() throws {
 
-            let bytes: [Byte] = "007".utf8.map(Byte.init)
+            let bytes: [Byte] = "007".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
                 let span = buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
@@ -413,7 +413,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `unterminated string throws`() throws {
-            let bytes: [Byte] = #""unterminated"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #""unterminated"#.utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
                 let span = buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
@@ -435,7 +435,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `unknown byte throws`() throws {
-            let bytes: [Byte] = "@".utf8.map(Byte.init)
+            let bytes: [Byte] = "@".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
                 let span = buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
@@ -460,7 +460,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next skips leading whitespace`() throws {
-            let bytes: [Byte] = "   \n\t  null".utf8.map(Byte.init)
+            let bytes: [Byte] = "   \n\t  null".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -471,7 +471,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next skips whitespace between tokens`() throws {
-            let bytes: [Byte] = #"{   "key"   :   42   }"#.utf8.map(Byte.init)
+            let bytes: [Byte] = #"{   "key"   :   42   }"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -499,7 +499,7 @@ extension RFC_8259.Pull.Tokens {
 
         @Test
         func `next on whitespace-only returns nil`() throws {
-            let bytes: [Byte] = "   \n   ".utf8.map(Byte.init)
+            let bytes: [Byte] = "   \n   ".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
                 let span = buf.span
@@ -511,7 +511,7 @@ extension RFC_8259.Pull.Tokens {
         @Test
         func `Token Kind unknown payload variant flows through next`() throws {
 
-            let bytes: [Byte] = [0xFF]
+            let bytes: [Byte] = [Byte(bitPattern: 0xFF)]
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
                 let span = buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
@@ -522,7 +522,7 @@ extension RFC_8259.Pull.Tokens {
                     if case .unexpectedToken(_, let found, _) = error,
                         case .unknown(let byte) = found
                     {
-                        #expect(byte == 0xFF)
+                        #expect(byte == Byte(bitPattern: 0xFF))
                     } else {
                         Issue.record("Wrong error: \(error)")
                     }

@@ -7,84 +7,84 @@ struct `Serializable EventStream Tests` {
 
     @Test
     func `String round-trips via from eventDecodingJsonBytes`() throws {
-        let bytes: [Byte] = #""hello world""#.utf8.map(Byte.init)
+        let bytes: [Byte] = #""hello world""#.utf8.map(Byte.init(bitPattern:))
         let result = try String.from(eventDecodingJsonBytes: bytes)
         #expect(result == "hello world")
     }
 
     @Test
     func `Int round-trips via from eventDecodingJsonBytes`() throws {
-        let bytes: [Byte] = "42".utf8.map(Byte.init)
+        let bytes: [Byte] = "42".utf8.map(Byte.init(bitPattern:))
         let result = try Int.from(eventDecodingJsonBytes: bytes)
         #expect(result == 42)
     }
 
     @Test
     func `Int64 round-trips via from eventDecodingJsonBytes`() throws {
-        let bytes: [Byte] = "9223372036854775807".utf8.map(Byte.init)
+        let bytes: [Byte] = "9223372036854775807".utf8.map(Byte.init(bitPattern:))
         let result = try Int64.from(eventDecodingJsonBytes: bytes)
         #expect(result == 9_223_372_036_854_775_807)
     }
 
     @Test
     func `Double round-trips via from eventDecodingJsonBytes`() throws {
-        let bytes: [Byte] = "3.14159".utf8.map(Byte.init)
+        let bytes: [Byte] = "3.14159".utf8.map(Byte.init(bitPattern:))
         let result = try Double.from(eventDecodingJsonBytes: bytes)
         #expect(result == 3.14159)
     }
 
     @Test
     func `Bool true round-trips via event-grain`() throws {
-        let bytes: [Byte] = "true".utf8.map(Byte.init)
+        let bytes: [Byte] = "true".utf8.map(Byte.init(bitPattern:))
         let result = try Bool.from(eventDecodingJsonBytes: bytes)
         #expect(result == true)
     }
 
     @Test
     func `Bool false round-trips via event-grain`() throws {
-        let bytes: [Byte] = "false".utf8.map(Byte.init)
+        let bytes: [Byte] = "false".utf8.map(Byte.init(bitPattern:))
         let result = try Bool.from(eventDecodingJsonBytes: bytes)
         #expect(result == false)
     }
 
     @Test
     func `Optional nil round-trips via event-grain`() throws {
-        let bytes: [Byte] = "null".utf8.map(Byte.init)
+        let bytes: [Byte] = "null".utf8.map(Byte.init(bitPattern:))
         let result: Int? = try Int?.from(eventDecodingJsonBytes: bytes)
         #expect(result == nil)
     }
 
     @Test
     func `Optional value round-trips via event-grain`() throws {
-        let bytes: [Byte] = "42".utf8.map(Byte.init)
+        let bytes: [Byte] = "42".utf8.map(Byte.init(bitPattern:))
         let result: Int? = try Int?.from(eventDecodingJsonBytes: bytes)
         #expect(result == 42)
     }
 
     @Test
     func `Array of Int round-trips via event-grain`() throws {
-        let bytes: [Byte] = "[1,2,3,4,5]".utf8.map(Byte.init)
+        let bytes: [Byte] = "[1,2,3,4,5]".utf8.map(Byte.init(bitPattern:))
         let result: [Int] = try [Int].from(eventDecodingJsonBytes: bytes)
         #expect(result == [1, 2, 3, 4, 5])
     }
 
     @Test
     func `Empty array round-trips via event-grain`() throws {
-        let bytes: [Byte] = "[]".utf8.map(Byte.init)
+        let bytes: [Byte] = "[]".utf8.map(Byte.init(bitPattern:))
         let result: [Int] = try [Int].from(eventDecodingJsonBytes: bytes)
         #expect(result.isEmpty)
     }
 
     @Test
     func `Array of String round-trips via event-grain`() throws {
-        let bytes: [Byte] = #"["a","b","c"]"#.utf8.map(Byte.init)
+        let bytes: [Byte] = #"["a","b","c"]"#.utf8.map(Byte.init(bitPattern:))
         let result: [String] = try [String].from(eventDecodingJsonBytes: bytes)
         #expect(result == ["a", "b", "c"])
     }
 
     @Test
     func `Dictionary of String Int round-trips via event-grain`() throws {
-        let bytes: [Byte] = #"{"a":1,"b":2,"c":3}"#.utf8.map(Byte.init)
+        let bytes: [Byte] = #"{"a":1,"b":2,"c":3}"#.utf8.map(Byte.init(bitPattern:))
         let result: [String: Int] = try [String: Int].from(eventDecodingJsonBytes: bytes)
         #expect(result["a"] == 1)
         #expect(result["b"] == 2)
@@ -94,21 +94,21 @@ struct `Serializable EventStream Tests` {
 
     @Test
     func `Empty dictionary round-trips via event-grain`() throws {
-        let bytes: [Byte] = "{}".utf8.map(Byte.init)
+        let bytes: [Byte] = "{}".utf8.map(Byte.init(bitPattern:))
         let result: [String: Int] = try [String: Int].from(eventDecodingJsonBytes: bytes)
         #expect(result.isEmpty)
     }
 
     @Test
     func `Nested Array of Array round-trips via event-grain`() throws {
-        let bytes: [Byte] = "[[1,2],[3,4],[5,6]]".utf8.map(Byte.init)
+        let bytes: [Byte] = "[[1,2],[3,4],[5,6]]".utf8.map(Byte.init(bitPattern:))
         let result: [[Int]] = try [[Int]].from(eventDecodingJsonBytes: bytes)
         #expect(result == [[1, 2], [3, 4], [5, 6]])
     }
 
     @Test
     func `JSON itself round-trips via event-grain`() throws {
-        let bytes: [Byte] = #"{"key":"value","number":42}"#.utf8.map(Byte.init)
+        let bytes: [Byte] = #"{"key":"value","number":42}"#.utf8.map(Byte.init(bitPattern:))
         let result = try JSON.from(eventDecodingJsonBytes: bytes)
         #expect(String(result["key"]) == "value")
         #expect(Int(result["number"]) == 42)
@@ -123,7 +123,7 @@ struct `Serializable EventStream Tests` {
     @Test
     func `Default fallback short-circuit produces same result as tree path`() throws {
         let input = #"{"name":"Alice","age":30}"#
-        let bytes: [Byte] = input.utf8.map(Byte.init)
+        let bytes: [Byte] = input.utf8.map(Byte.init(bitPattern:))
 
         let viaTree = try FooDefault(jsonBytes: bytes)
         let viaEvents = try FooDefault.from(eventDecodingJsonBytes: bytes)
@@ -139,7 +139,7 @@ struct `Serializable EventStream Tests` {
     @Test
     func `Opt-in event-grain reads only declared fields`() throws {
         let input = #"{"name":"Alice","age":30,"extra":[1,2,3,{"nested":true}],"ignored":"x"}"#
-        let bytes: [Byte] = input.utf8.map(Byte.init)
+        let bytes: [Byte] = input.utf8.map(Byte.init(bitPattern:))
 
         let result = try FooEventGrain.from(eventDecodingJsonBytes: bytes)
         #expect(result.name == "Alice")
@@ -148,7 +148,7 @@ struct `Serializable EventStream Tests` {
     @Test
     func `Opt-in event-grain handles missing declared field`() throws {
         let input = #"{"age":30,"extra":[1,2,3]}"#
-        let bytes: [Byte] = input.utf8.map(Byte.init)
+        let bytes: [Byte] = input.utf8.map(Byte.init(bitPattern:))
 
         let thrown = #expect(throws: JSON.Error.self) {
             _ = try FooEventGrain.from(eventDecodingJsonBytes: bytes)
@@ -162,7 +162,7 @@ struct `Serializable EventStream Tests` {
 
     @Test
     func `from eventDecodingJsonBytes works with contiguous ArraySlice`() throws {
-        let bytes: [Byte] = "42".utf8.map(Byte.init)
+        let bytes: [Byte] = "42".utf8.map(Byte.init(bitPattern:))
         let slice = bytes[0..<2]
         let result = try Int.from(eventDecodingJsonBytes: slice)
         #expect(result == 42)
@@ -170,7 +170,7 @@ struct `Serializable EventStream Tests` {
 
     @Test
     func `from eventDecodingJsonBytes works with ContiguousArray`() throws {
-        let bytes = ContiguousArray<Byte>("42".utf8.map(Byte.init))
+        let bytes = ContiguousArray<Byte>("42".utf8.map(Byte.init(bitPattern:)))
         let result = try Int.from(eventDecodingJsonBytes: bytes)
         #expect(result == 42)
     }

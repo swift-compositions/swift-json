@@ -11,7 +11,7 @@ extension JSON.Coder {
             for json in ["null", "true", "false"] {
                 let value = try JSON.Decode.parse(json)
                 let encoded = JSON.Encode.encode(value)
-                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
                 #expect(value == reparsed)
             }
         }
@@ -21,7 +21,7 @@ extension JSON.Coder {
             for json in ["0", "1", "-1", "42", "-123", "999999999"] {
                 let value = try JSON.Decode.parse(json)
                 let encoded = JSON.Encode.encode(value)
-                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
                 #expect(value == reparsed)
             }
         }
@@ -31,7 +31,7 @@ extension JSON.Coder {
             for json in ["0.0", "3.14", "-2.5", "1.5e10", "1e-5"] {
                 let value = try JSON.Decode.parse(json)
                 let encoded = JSON.Encode.encode(value)
-                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
                 #expect(value == reparsed)
             }
         }
@@ -41,7 +41,7 @@ extension JSON.Coder {
             for json in ["\"\"", "\"hello\"", "\"hello\\nworld\"", "\"\\u0041\""] {
                 let value = try JSON.Decode.parse(json)
                 let encoded = JSON.Encode.encode(value)
-                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
                 #expect(value == reparsed)
             }
         }
@@ -51,7 +51,7 @@ extension JSON.Coder {
             for json in ["[]", "[1]", "[1, 2, 3]", "[[1], [2]]"] {
                 let value = try JSON.Decode.parse(json)
                 let encoded = JSON.Encode.encode(value)
-                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+                let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
                 #expect(value == reparsed)
             }
         }
@@ -61,7 +61,7 @@ extension JSON.Coder {
             let json = "{\"name\":\"John\",\"age\":30}"
             let value = try JSON.Decode.parse(json)
             let encoded = JSON.Encode.encode(value)
-            let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+            let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
             #expect(value == reparsed)
         }
 
@@ -70,7 +70,7 @@ extension JSON.Coder {
             let json = "{\"users\":[{\"name\":\"Alice\",\"active\":true}]}"
             let value = try JSON.Decode.parse(json)
             let encoded = JSON.Encode.encode(value)
-            let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+            let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
             #expect(value == reparsed)
         }
 
@@ -90,7 +90,7 @@ extension JSON.Coder {
                 """
             let value = try JSON.Decode.parse(json)
             let encoded = JSON.Encode.encode(value)
-            let reparsed = try JSON.Decode.parse(encoded.map(Byte.init))
+            let reparsed = try JSON.Decode.parse(encoded.map(Byte.init(bitPattern:)))
             #expect(value == reparsed)
         }
     }

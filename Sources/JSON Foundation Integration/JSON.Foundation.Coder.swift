@@ -11,7 +11,7 @@ extension JSON.Foundation {
     }
 }
 
-extension JSON.Foundation.Coder: Coder::Coder.`Protocol` {
+extension JSON.Foundation.Coder: Coder::Coding {
     public typealias Input = Data
     public typealias Buffer = Data
     public typealias Output = Value

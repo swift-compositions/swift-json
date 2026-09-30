@@ -206,7 +206,7 @@ extension Int64: JSON.Serializable {
     @inlinable
     public static func serialize(_ value: Int64) -> JSON {
         let str = String(value)
-        let number = RFC_8259.Number(value, original: .init(Swift.Array(str.utf8)))
+        let number = RFC_8259.Number(value, original: .init(str.utf8.map(Byte.init(bitPattern:))))
         return JSON(.number(number))
     }
 

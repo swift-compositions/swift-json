@@ -52,17 +52,16 @@ let package = Package(
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-atoms/swift-ascii.git",
-            branch: "main", traits: ["Parser"]),
-        .package(
-            url: "https://github.com/swift-atoms/swift-coder.git",
-            branch: "main"
-        ),
-        .package(
             url: "https://github.com/swift-atoms/swift-either.git",
             branch: "main"
         ),
         .package(url: "https://github.com/swift-molecules/swift-async-stream.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-ascii.git", branch: "main", traits: ["Coder", "Parser", "Serializer"]),
+        .package(url: "https://github.com/swift-atoms/swift-coder.git", branch: "main", traits: ["Carrier", "Map"]),
+        .package(url: "https://github.com/swift-atoms/swift-ratio.git", branch: "main", traits: ["Bit", "Ordinal", "Difference"]),
+        .package(url: "https://github.com/swift-atoms/swift-span.git", branch: "main", traits: ["Iterator"]),
+        .package(url: "https://github.com/swift-atoms/swift-finite.git", branch: "main", traits: ["Tagged"]),
+        .package(url: "https://github.com/swift-atoms/swift-memory.git", branch: "main", traits: ["Lock", "Map", "Shared", "Cursor"]),
     ],
     targets: [
         .target(
