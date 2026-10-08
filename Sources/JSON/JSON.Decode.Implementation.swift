@@ -539,7 +539,7 @@ extension JSON.Decode.Implementation {
             }
         }
 
-        let span = bytes.span
+        let span: Swift.Span<Byte> = bytes.span
         let original = RFC_8259.Number.Original(span)
 
         if isFloat {
