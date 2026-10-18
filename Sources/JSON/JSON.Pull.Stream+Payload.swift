@@ -1,8 +1,8 @@
 @_spi(Unsafe) public import Array
 public import Array_Small_Primitive
-public import Buffer_Linear_Primitive
-public import Buffer_Linear
 import Buffer
+public import Buffer_Linear
+public import Buffer_Linear_Primitive
 public import Byte
 public import Index
 public import Memory_Allocator
@@ -67,8 +67,8 @@ package func _lexString(
                 let count = scratch.count
                 return scratch.withUnsafeBufferPointer { src -> String in
                     String(unsafeUninitializedCapacity: count) { dst in
-                        if count > 0 {
-                            unsafe dst.baseAddress!.update(from: src.baseAddress!, count: count)
+                        if count > 0, let target = unsafe dst.baseAddress, let source = unsafe src.baseAddress {
+                            unsafe target.update(from: source, count: count)
                         }
                         return count
                     }

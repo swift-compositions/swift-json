@@ -178,8 +178,7 @@ extension JSON {
     }
 
     @inlinable
-    public func serialize(pretty: Bool = false, sortKeys: Bool = false, as: [UInt8].Type) -> [UInt8]
-    {
+    public func serialize(pretty: Bool = false, sortKeys: Bool = false, as: [UInt8].Type) -> [UInt8] {
         let options = JSON.Encode.Options(prettyPrint: pretty, sortKeys: sortKeys)
         var bytes: [UInt8] = []
         var encoder = JSON.Encode.Encoder(options: options)

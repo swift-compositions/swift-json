@@ -131,8 +131,7 @@ extension String: JSON.Serializable {
     }
 
     @inlinable
-    public static func deserialize(events: inout JSON.Span.EventStream) throws(JSON.Error) -> String
-    {
+    public static func deserialize(events: inout JSON.Span.EventStream) throws(JSON.Error) -> String {
         guard let token = try events.next() else {
             throw .typeMismatch(expected: "string", got: "end of input")
         }
@@ -219,8 +218,7 @@ extension Int64: JSON.Serializable {
     }
 
     @inlinable
-    public static func deserialize(events: inout JSON.Span.EventStream) throws(JSON.Error) -> Int64
-    {
+    public static func deserialize(events: inout JSON.Span.EventStream) throws(JSON.Error) -> Int64 {
         guard let token = try events.next() else {
             throw .typeMismatch(expected: "int64", got: "end of input")
         }
@@ -250,8 +248,7 @@ extension Double: JSON.Serializable {
     }
 
     @inlinable
-    public static func deserialize(events: inout JSON.Span.EventStream) throws(JSON.Error) -> Double
-    {
+    public static func deserialize(events: inout JSON.Span.EventStream) throws(JSON.Error) -> Double {
         guard let token = try events.next() else {
             throw .typeMismatch(expected: "double", got: "end of input")
         }

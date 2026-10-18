@@ -81,8 +81,14 @@ extension JSON.Encoder {
             @Test
             func `encodes every primitive the containers expose`() throws {
                 let value = Primitives(
-                    text: "swift", flag: true, signed: -42, unsigned: 42,
-                    fraction: 2.5, single: 0.5, absent: nil, present: "here"
+                    text: "swift",
+                    flag: true,
+                    signed: -42,
+                    unsigned: 42,
+                    fraction: 2.5,
+                    single: 0.5,
+                    absent: nil,
+                    present: "here"
                 )
                 let expected = try JSON.parse(
                     #"{"text":"swift","flag":true,"signed":-42,"unsigned":42,"fraction":2.5,"single":0.5,"present":"here"}"#
@@ -147,8 +153,14 @@ extension JSON.Encoder {
             @Test
             func `round-trips primitives`() throws {
                 let value = Primitives(
-                    text: "swift", flag: false, signed: .min, unsigned: .max,
-                    fraction: 0.1, single: 0.1, absent: nil, present: "é\n\"quoted\""
+                    text: "swift",
+                    flag: false,
+                    signed: .min,
+                    unsigned: .max,
+                    fraction: 0.1,
+                    single: 0.1,
+                    absent: nil,
+                    present: "é\n\"quoted\""
                 )
                 #expect(try JSON(encoding: value).decode(Primitives.self) == value)
             }

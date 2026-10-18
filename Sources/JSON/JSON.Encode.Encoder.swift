@@ -196,10 +196,11 @@ extension JSON.Encode.Encoder {
         into buffer: inout Buffer
     ) where Buffer.Element == UInt8 {
 
-        buffer.append(ASCII.Hexadecimal.code(UInt8((value >> 12) & 0x0F), case: .lower)!.underlying)
-        buffer.append(ASCII.Hexadecimal.code(UInt8((value >> 8) & 0x0F), case: .lower)!.underlying)
-        buffer.append(ASCII.Hexadecimal.code(UInt8((value >> 4) & 0x0F), case: .lower)!.underlying)
-        buffer.append(ASCII.Hexadecimal.code(UInt8(value & 0x0F), case: .lower)!.underlying)
+        for shift in stride(from: 12, through: 0, by: -4) {
+            if let digit = ASCII.Hexadecimal.code(UInt8((value >> UInt16(shift)) & 0x0F), case: .lower) {
+                buffer.append(digit.underlying)
+            }
+        }
     }
 
     @inlinable
