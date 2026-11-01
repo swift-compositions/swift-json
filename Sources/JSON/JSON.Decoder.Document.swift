@@ -27,18 +27,6 @@ extension JSON.Decoder {
 
 extension JSON.Decoder.Document {
 
-    /// What has been built from a document's text.
-    internal final class Tally {
-
-        /// Values built, each nested value counted, and keys read.
-        internal var built = 0
-
-        internal init() {}
-    }
-}
-
-extension JSON.Decoder.Document {
-
     internal var all: Range<Int> { 0..<bytes.count }
 
     /// The first byte of the value in `range`.

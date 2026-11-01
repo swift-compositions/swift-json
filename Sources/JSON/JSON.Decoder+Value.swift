@@ -10,6 +10,7 @@ extension JSON.Decoder {
         case .value(.string): "a string"
         case .value(.array): "an array"
         case .value(.object): "an object"
+
         case .text(let document, let range):
             switch document.first(range) {
             case 0x6E: "null"

@@ -10,10 +10,6 @@ extension JSON.Decoder {
 
         internal let codingPath: [any CodingKey]
 
-        internal init(object: RFC_8259.Object, codingPath: [any CodingKey]) {
-            self.init(members: object.map { (key: $0.key, source: .value($0.value)) }, codingPath: codingPath)
-        }
-
         /// The first member of each key wins, as `RFC_8259.Object` keeps them.
         internal init(members: [(key: String, source: JSON.Decoder.Source)], codingPath: [any CodingKey]) {
             var index: [String: JSON.Decoder.Source] = [:]

@@ -7,24 +7,6 @@ extension JSON {
         internal let source: Source
 
         internal let codingPath: [any CodingKey]
-
-        internal init(source: Source, codingPath: [any CodingKey]) {
-            self.source = source
-            self.codingPath = codingPath
-        }
-
-        internal init(value: RFC_8259.Value, codingPath: [any CodingKey]) {
-            self.init(source: .value(value), codingPath: codingPath)
-        }
-    }
-}
-
-extension JSON.Decoder {
-
-    /// Where a value is: already built, or still text in a checked document, built only when it is decoded.
-    internal enum Source {
-        case value(RFC_8259.Value)
-        case text(JSON.Decoder.Document, Range<Int>)
     }
 }
 
@@ -35,44 +17,17 @@ extension JSON.Decoder: Swift.Decoder {
     internal func container<Key: CodingKey>(
         keyedBy type: Key.Type
     ) throws(DecodingError) -> KeyedDecodingContainer<Key> {
-        switch source {
-        case .value(.object(let object)):
-            return KeyedDecodingContainer(
-                JSON.Decoder.Keyed<Key>(object: object, codingPath: codingPath)
-            )
-
-        case .text(let document, let range):
-            let members = try text { () throws(RFC_8259.Error) in try document.members(range) }
-            guard let members else {
-                throw mismatch(KeyedDecodingContainer<Key>.self)
-            }
-            return KeyedDecodingContainer(
-                JSON.Decoder.Keyed<Key>(
-                    members: members.map { (key: $0.key, source: .text(document, $0.range)) },
-                    codingPath: codingPath
-                )
-            )
-
-        case .value:
+        guard let members = try members() else {
             throw mismatch(KeyedDecodingContainer<Key>.self)
         }
+        return KeyedDecodingContainer(JSON.Decoder.Keyed<Key>(members: members, codingPath: codingPath))
     }
 
     internal func unkeyedContainer() throws(DecodingError) -> any UnkeyedDecodingContainer {
-        switch source {
-        case .value(.array(let array)):
-            return JSON.Decoder.Unkeyed(elements: array.map(Source.value), codingPath: codingPath)
-
-        case .text(let document, let range):
-            let elements = try text { () throws(RFC_8259.Error) in try document.elements(range) }
-            guard let elements else {
-                throw mismatch((any UnkeyedDecodingContainer).self)
-            }
-            return JSON.Decoder.Unkeyed(elements: elements.map { .text(document, $0) }, codingPath: codingPath)
-
-        case .value:
+        guard let elements = try elements() else {
             throw mismatch((any UnkeyedDecodingContainer).self)
         }
+        return JSON.Decoder.Unkeyed(elements: elements, codingPath: codingPath)
     }
 
     internal func singleValueContainer() throws(DecodingError) -> any SingleValueDecodingContainer {
@@ -81,6 +36,36 @@ extension JSON.Decoder: Swift.Decoder {
 }
 
 extension JSON.Decoder {
+
+    /// Each member's key and where its value is, when this is an object: a text object is indexed, not built.
+    internal func members() throws(DecodingError) -> [(key: String, source: Source)]? {
+        switch source {
+        case .value(.object(let object)):
+            return object.map { (key: $0.key, source: .value($0.value)) }
+
+        case .text(let document, let range):
+            let members = try text { () throws(RFC_8259.Error) in try document.members(range) }
+            return members?.map { (key: $0.key, source: .text(document, $0.range)) }
+
+        case .value:
+            return nil
+        }
+    }
+
+    /// Where each element is, when this is an array.
+    internal func elements() throws(DecodingError) -> [Source]? {
+        switch source {
+        case .value(.array(let array)):
+            return array.map(Source.value)
+
+        case .text(let document, let range):
+            let elements = try text { () throws(RFC_8259.Error) in try document.elements(range) }
+            return elements?.map { .text(document, $0) }
+
+        case .value:
+            return nil
+        }
+    }
 
     /// The value, built from the text when it is still text.
     internal func value() throws(DecodingError) -> RFC_8259.Value {
@@ -117,21 +102,19 @@ extension JSON {
     /// bytes and nothing more.
     public static func decode<T: Swift.Decodable, Bytes: Swift.Collection<Byte>>(
         _ type: T.Type = T.self,
-        from bytes: Bytes,
-        maxDepth: Int = 512
+        from bytes: Bytes
     ) throws(Swift.DecodingError) -> T {
-        try decode(type, from: bytes, maxDepth: maxDepth, tally: nil)
+        try decode(type, from: bytes, tally: nil)
     }
 
     internal static func decode<T: Swift.Decodable, Bytes: Swift.Collection<Byte>>(
         _ type: T.Type,
         from bytes: Bytes,
-        maxDepth: Int,
         tally: JSON.Decoder.Document.Tally?
     ) throws(Swift.DecodingError) -> T {
         let document: JSON.Decoder.Document
         do throws(RFC_8259.Error) {
-            document = try JSON.Decoder.Document(Swift.Array(bytes), maxDepth: maxDepth, tally: tally)
+            document = try JSON.Decoder.Document(Swift.Array(bytes), maxDepth: 512, tally: tally)
         } catch {
             throw .dataCorrupted(
                 DecodingError.Context(codingPath: [], debugDescription: "The given data was not valid JSON.", underlyingError: error)
