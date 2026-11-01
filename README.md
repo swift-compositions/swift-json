@@ -72,6 +72,7 @@ Add the product to your target:
 - **Non-trapping navigation** — `json.user.name` and `json["items"][0]` return `.null` for missing keys and out-of-bounds indices instead of crashing
 - **`JSON.Serializable` protocol** — declare a type's JSON representation once and get `init(json:)`, `init(jsonString:)`, `init(jsonBytes:)`, `jsonString()`, and `jsonBytes()` for free; `String`, `Bool`, `Int`, `Int64`, `Double`, `Array`, `Dictionary`, and `Optional` conform out of the box
 - **Event-grain streaming decode** — `JSON.Span.EventStream` is a `~Copyable`, `~Escapable` pull-driven token stream over `Span<Byte>`; conformers can override `deserialize(events:)` to decode bytes-to-target without materializing the value tree, skipping undeclared fields via `skipValue()`
+- **`Decodable` from text, built only as deep as the type asks** — `JSON.decode(T.self, from: bytes)` checks the text once, as strictly as the parser does, then indexes each container it enters into where its members lie; a member `T` does not name is never built
 - **Async streaming** — NDJSON line streams and single-document collection from any `AsyncSequence` of bytes
 - **RFC 8259 grammar underneath** — parsing, number semantics, and string escapes come from a dedicated RFC 8259 implementation; the `RFC_8259` module is re-exported for advanced use
 

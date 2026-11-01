@@ -4,19 +4,24 @@ extension JSON.Decoder {
 
     internal struct Keyed<Key: CodingKey> {
 
-        internal let index: [String: RFC_8259.Value]
+        internal let index: [String: JSON.Decoder.Source]
 
         internal let names: [String]
 
         internal let codingPath: [any CodingKey]
 
         internal init(object: RFC_8259.Object, codingPath: [any CodingKey]) {
-            var index: [String: RFC_8259.Value] = [:]
+            self.init(members: object.map { (key: $0.key, source: .value($0.value)) }, codingPath: codingPath)
+        }
+
+        /// The first member of each key wins, as `RFC_8259.Object` keeps them.
+        internal init(members: [(key: String, source: JSON.Decoder.Source)], codingPath: [any CodingKey]) {
+            var index: [String: JSON.Decoder.Source] = [:]
             var names: [String] = []
-            index.reserveCapacity(object.count)
-            names.reserveCapacity(object.count)
-            for member in object where index[member.key] == nil {
-                index[member.key] = member.value
+            index.reserveCapacity(members.count)
+            names.reserveCapacity(members.count)
+            for member in members where index[member.key] == nil {
+                index[member.key] = member.source
                 names.append(member.key)
             }
             self.index = index
@@ -40,7 +45,7 @@ extension JSON.Decoder.Keyed {
                 )
             )
         }
-        return JSON.Decoder(value: found, codingPath: codingPath + [key])
+        return JSON.Decoder(source: found, codingPath: codingPath + [key])
     }
 }
 
@@ -55,7 +60,7 @@ extension JSON.Decoder.Keyed: KeyedDecodingContainerProtocol {
     }
 
     internal func decodeNil(forKey key: Key) throws(DecodingError) -> Bool {
-        try decoder(for: key).value.isNull
+        try decoder(for: key).isNull
     }
 
     internal func decode(_ type: Bool.Type, forKey key: Key) throws(DecodingError) -> Bool {
@@ -146,7 +151,7 @@ extension JSON.Decoder.Keyed: KeyedDecodingContainerProtocol {
                 )
             )
         }
-        return JSON.Decoder(value: found, codingPath: codingPath + [key])
+        return JSON.Decoder(source: found, codingPath: codingPath + [key])
     }
 
     internal func superDecoder(forKey key: Key) throws(DecodingError) -> any Swift.Decoder {

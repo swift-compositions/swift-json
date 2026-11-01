@@ -4,16 +4,16 @@ extension JSON.Decoder {
 
     internal struct Unkeyed {
 
-        internal let array: RFC_8259.Array
+        internal let elements: [JSON.Decoder.Source]
 
         internal let codingPath: [any CodingKey]
 
         internal var currentIndex: Int
 
-        internal init(array: RFC_8259.Array, codingPath: [any CodingKey]) {
-            self.array = array
+        internal init(elements: [JSON.Decoder.Source], codingPath: [any CodingKey]) {
+            self.elements = elements
             self.codingPath = codingPath
-            self.currentIndex = array.startIndex
+            self.currentIndex = elements.startIndex
         }
 
     }
@@ -24,13 +24,13 @@ extension JSON.Decoder.Unkeyed {
     internal func peek<T>(_ type: T.Type) throws(DecodingError) -> JSON.Decoder {
         guard !isAtEnd else { throw exhausted(type) }
         return JSON.Decoder(
-            value: array[currentIndex],
+            source: elements[currentIndex],
             codingPath: codingPath + [JSON.Decoder.Key.index(currentIndex)]
         )
     }
 
     internal mutating func advance() {
-        currentIndex = array.index(after: currentIndex)
+        currentIndex = elements.index(after: currentIndex)
     }
 
     internal func exhausted<T>(_ type: T.Type) -> DecodingError {
@@ -39,20 +39,20 @@ extension JSON.Decoder.Unkeyed {
             DecodingError.Context(
                 codingPath: codingPath + [JSON.Decoder.Key.index(currentIndex)],
                 debugDescription:
-                    "Unkeyed container is at end: \(array.count) element(s) available."
+                    "Unkeyed container is at end: \(elements.count) element(s) available."
             )
         )
     }
 }
 
 extension JSON.Decoder.Unkeyed: UnkeyedDecodingContainer {
-    internal var count: Int? { array.count }
+    internal var count: Int? { elements.count }
 
-    internal var isAtEnd: Bool { currentIndex >= array.endIndex }
+    internal var isAtEnd: Bool { currentIndex >= elements.endIndex }
 
     internal mutating func decodeNil() throws(DecodingError) -> Bool {
         guard !isAtEnd else { throw exhausted(Any?.self) }
-        guard array[currentIndex].isNull else { return false }
+        guard try peek(Any?.self).isNull else { return false }
         advance()
         return true
     }

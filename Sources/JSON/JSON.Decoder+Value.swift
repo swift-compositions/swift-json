@@ -3,13 +3,22 @@ import RFC_8259
 extension JSON.Decoder {
 
     internal var kind: String {
-        switch value {
-        case .null: "null"
-        case .bool: "a boolean"
-        case .number: "a number"
-        case .string: "a string"
-        case .array: "an array"
-        case .object: "an object"
+        switch source {
+        case .value(.null): "null"
+        case .value(.bool): "a boolean"
+        case .value(.number): "a number"
+        case .value(.string): "a string"
+        case .value(.array): "an array"
+        case .value(.object): "an object"
+        case .text(let document, let range):
+            switch document.first(range) {
+            case 0x6E: "null"
+            case 0x74, 0x66: "a boolean"
+            case 0x22: "a string"
+            case 0x5B: "an array"
+            case 0x7B: "an object"
+            default: "a number"
+            }
         }
     }
 
@@ -18,7 +27,7 @@ extension JSON.Decoder {
             codingPath: codingPath,
             debugDescription: "Expected to decode \(type) but found \(kind) instead."
         )
-        if case .null = value {
+        if isNull {
             return .valueNotFound(type, context)
         }
         return .typeMismatch(type, context)
@@ -36,12 +45,12 @@ extension JSON.Decoder {
 
 extension JSON.Decoder {
     internal func string() throws(DecodingError) -> String {
-        guard case .string(let string) = value else { throw mismatch(String.self) }
+        guard case .string(let string) = try value() else { throw mismatch(String.self) }
         return string
     }
 
     internal func bool() throws(DecodingError) -> Bool {
-        guard case .bool(let bool) = value else { throw mismatch(Bool.self) }
+        guard case .bool(let bool) = try value() else { throw mismatch(Bool.self) }
         return bool
     }
 }
@@ -51,7 +60,7 @@ extension JSON.Decoder {
     internal func integer<T: FixedWidthInteger>(
         _ type: T.Type
     ) throws(DecodingError) -> T {
-        guard case .number(let number) = value else { throw mismatch(type) }
+        guard case .number(let number) = try value() else { throw mismatch(type) }
         switch number.parsed {
         case .integer(let signed):
             guard let exact = T(exactly: signed) else { throw overflow(number, type) }
@@ -76,7 +85,7 @@ extension JSON.Decoder {
     internal func floating<T: BinaryFloatingPoint>(
         _ type: T.Type
     ) throws(DecodingError) -> T {
-        guard case .number(let number) = value else { throw mismatch(type) }
+        guard case .number(let number) = try value() else { throw mismatch(type) }
         let converted: T
         switch number.parsed {
         case .integer(let signed): converted = T(signed)

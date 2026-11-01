@@ -10,7 +10,7 @@ extension JSON.Decoder.Single: SingleValueDecodingContainer {
 
     internal var codingPath: [any CodingKey] { decoder.codingPath }
 
-    internal func decodeNil() -> Bool { decoder.value.isNull }
+    internal func decodeNil() -> Bool { decoder.isNull }
 
     internal func decode(_ type: Bool.Type) throws(DecodingError) -> Bool {
         try decoder.bool()
