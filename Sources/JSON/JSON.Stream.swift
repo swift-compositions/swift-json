@@ -16,11 +16,6 @@ extension JSON.ND {
     }
 }
 
-extension JSON {
-
-    public enum ND {}
-}
-
 extension JSON.ND {
 
     @usableFromInline

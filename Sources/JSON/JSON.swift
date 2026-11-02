@@ -213,3 +213,14 @@ extension JSON {
         }
     }
 }
+
+extension JSON {
+
+    /// `value` encoded as JSON text, in one step.
+    public static func encode<T: Swift.Encodable>(
+        _ value: T,
+        options: JSON.Encode.Options = JSON.Encode.Options()
+    ) throws(Swift.EncodingError) -> [Byte] {
+        JSON.Encode.encode(RFC_8259.Value(try JSON(encoding: value)), options: options).map { Byte($0) }
+    }
+}
