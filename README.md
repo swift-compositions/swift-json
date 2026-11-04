@@ -1,211 +1,26 @@
 # swift-json
 
-![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+Use this package when you read or write JSON text in Swift and want typed errors and strict RFC 8259 parsing. Start from `JSON` to build, parse, navigate and serialize values. To decode your `Decodable` types straight from bytes, use `JSON.decode(_:from:)`, and to encode `Encodable` types, `JSON.encode(_:options:)`. Conform to `JSON.Serializable` to map your own types without `Codable`. For newline-delimited JSON, use `JSON.ND`. If you only need the RFC 8259 value and grammar types, use swift-rfc-8259, which this package re-exports. If you want Foundation's `JSONEncoder` and `JSONDecoder` behind the same coder shape, add the `JSON Foundation Integration` product and use `JSON.Foundation.Coder<Value>`.
 
-Type-safe JSON values for Swift with typed throws, literal construction, dynamic member navigation, protocol-based serialization, and a pull-driven streaming decoder — all over one RFC 8259 grammar.
+## Laws
 
----
-
-## Quick Start
-
-```swift
-import JSON
-
-// Construct via literals
-let payload: JSON = [
-    "name": "Grace",
-    "age": 52,
-    "verified": true,
-    "tags": ["swift", "json"]
-]
-
-// Serialize
-let text = payload.serialize(pretty: true)
-
-// Parse — throws JSON.Error, not `any Error`
-let parsed = try JSON.parse(text)
-
-// Navigate with dynamic member lookup; extract with typed initializers
-String(parsed.name)       // "Grace" (empty string if not a string)
-Int(parsed.age)           // Optional(52)
-Bool(parsed.verified)     // Optional(true)
-parsed.tags[0]            // JSON value "swift"
-parsed.missing.deeply     // .null — navigation never traps
-```
-
-Every throwing entry point declares `throws(JSON.Error)`, so `catch` arms match concrete cases without casting.
-
----
-
-## Installation
-
-Add swift-json to your Package.swift:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/swift-compositions/swift-json.git", branch: "main")
-]
-```
-
-Add the product to your target:
-
-```swift
-.target(
-    name: "YourTarget",
-    dependencies: [
-        .product(name: "JSON", package: "swift-json")
-    ]
-)
-```
-
-### Requirements
-
-- Swift 6.2+ (Swift 6 language mode)
-- macOS 26.0+, iOS 26.0+, tvOS 26.0+, watchOS 26.0+, visionOS 26.0+
-
----
-
-## Key Features
-
-- **Typed throws end-to-end** — every parsing and deserialization API throws `JSON.Error`; no `any Error` escapes the surface
-- **Literal construction** — `JSON` conforms to all seven `ExpressibleBy*Literal` protocols, so JSON documents read like JSON
-- **Non-trapping navigation** — `json.user.name` and `json["items"][0]` return `.null` for missing keys and out-of-bounds indices instead of crashing
-- **`JSON.Serializable` protocol** — declare a type's JSON representation once and get `init(json:)`, `init(jsonString:)`, `init(jsonBytes:)`, `jsonString()`, and `jsonBytes()` for free; `String`, `Bool`, `Int`, `Int64`, `Double`, `Array`, `Dictionary`, and `Optional` conform out of the box
-- **Event-grain streaming decode** — `JSON.Span.EventStream` is a `~Copyable`, `~Escapable` pull-driven token stream over `Span<Byte>`; conformers can override `deserialize(events:)` to decode bytes-to-target without materializing the value tree, skipping undeclared fields via `skipValue()`
-- **`Decodable` from text, built only as deep as the type asks** — `JSON.decode(T.self, from: bytes)` checks the text once, as strictly as the parser does, then indexes each container it enters into where its members lie; a member `T` does not name is never built
-- **Async streaming** — NDJSON line streams and single-document collection from any `AsyncSequence` of bytes
-- **RFC 8259 grammar underneath** — parsing, number semantics, and string escapes come from a dedicated RFC 8259 implementation; the `RFC_8259` module is re-exported for advanced use
-
----
-
-## Serializing Your Own Types
-
-Conform to `JSON.Serializable` to move between your types and JSON without `Codable`:
-
-```swift
-import JSON
-
-struct User: JSON.Serializable {
-    let name: String
-    let age: Int
-
-    static func serialize(_ value: User) -> JSON {
-        [
-            "name": .string(value.name),
-            "age": .number(value.age)
-        ]
-    }
-
-    static func deserialize(_ json: JSON) throws(JSON.Error) -> User {
-        guard let name = String?(json.name) else { throw .missingKey("name") }
-        guard let age = Int(json.age) else { throw .missingKey("age") }
-        return User(name: name, age: age)
-    }
-}
-
-let user = try User(jsonString: #"{"name":"Grace","age":52}"#)
-let bytes = user.jsonBytes()
-```
-
-Conformers that need maximum throughput can additionally override the event-grain hook and decode directly from the token stream:
-
-```swift
-let user = try User.from(eventDecodingJsonBytes: bytes)
-```
-
-Types that do not override `deserialize(events:)` fall back to the tree-grain path automatically — no conformer is required to change.
-
----
-
-## Streaming
-
-Newline-delimited JSON (NDJSON) from an async byte source, one `Result` per line so a malformed line does not end the stream:
-
-```swift
-import JSON
-
-for await result in JSON.ND.stream(byteStream) {
-    switch result {
-    case .success(let json):
-        print(Int(json.id) ?? 0)
-    case .failure(let error):
-        print("Skipping malformed line: \(error)")
-    }
-}
-```
-
-Single-document collection from an async byte source:
-
-```swift
-let json = try await JSON.parse(collecting: byteStream)
-let user: User = try await .init(collecting: byteStream)
-```
-
----
-
-## Architecture
-
-Single module (`JSON`), organized around a small set of key types:
-
-| Type | Purpose |
-|------|---------|
-| `JSON` | The value type: literals, subscripts, dynamic member lookup, `parse`, `serialize` |
-| `JSON.Error` | The typed error thrown by every parsing/deserialization API |
-| `JSON.Serializable` | Protocol for your types: tree-grain and event-grain (de)serialization |
-| `JSON.Span.EventStream` | Pull-driven token stream over `Span<Byte>` for streaming decode |
-| `JSON.Parse` | Parse accessor: `JSON.parse(_:)`, plus prepared and located variants |
-| `JSON.Encode` / `JSON.Decode` | Encoding (options: pretty-print, key sorting, slash escaping, max depth) and decoding namespaces |
-| `JSON.Coder` | The canonical bidirectional codec for `RFC_8259.Value` |
-| `JSON.ND` | Newline-delimited JSON streaming |
-
-Importing `JSON` also re-exports the `RFC_8259` module, so the underlying value, number, and error types are available without a second import.
-
----
-
-## Error Handling
-
-All throwing APIs throw `JSON.Error`:
-
-```
-JSON.Error
-├── .typeMismatch(expected: String, got: String)   // Deserialization type mismatch
-├── .missingKey(String)                            // Required object key absent
-├── .invalidSyntax(message: String, location: Text.Location)  // Malformed JSON, with line + column
-├── .emptyInput                                    // Empty or whitespace-only input
-├── .depthExceeded(limit: Int)                     // Nesting depth over the limit
-└── .unknown                                       // Unclassified failure
-```
-
-Typed throws means exhaustive matching without casting:
-
-```swift
-do {
-    let user = try User(jsonString: input)
-} catch .typeMismatch(let expected, let got) {
-    print("Expected \(expected), got \(got)")
-} catch .missingKey(let key) {
-    print("Missing key: \(key)")
-} catch .invalidSyntax(let message, let location) {
-    print("Syntax error at \(location): \(message)")
-} catch .emptyInput {
-    print("No input")
-} catch .depthExceeded(let limit) {
-    print("Deeper than \(limit) levels")
-} catch .unknown {
-    print("Unknown error")
-}
-```
-
----
-
-## Community
-
-<!-- BEGIN: discussion -->
-*Discussion thread will be created at first public release.*
-<!-- END: discussion -->
-
----
-
-## License
-
-Apache 2.0. See [LICENSE.md](LICENSE.md) for details.
+- Parsing follows RFC 8259 strictly. Leading zeros, a plus sign, trailing commas, single quotes, unquoted keys, unescaped control characters in strings, capitalized literals and anything after the value are all refused.
+- Nesting is limited to 512 levels by default. Parsing past the limit fails with a depth error, not a syntax error.
+- Empty or whitespace-only input is reported as `JSON.Error.emptyInput`, not as invalid syntax.
+- `JSON.Error.Located` reports the offset in UTF-8 bytes from the start of the input, not in characters.
+- A parsed number keeps its original text, and serializing writes that text back, so `1.5e10` stays `1.5e10`. An integer is read as `Int64`, then `UInt64`, then `Double`. A number too large for a finite `Double`, such as `1e999`, is refused.
+- Reading a missing key, an index out of range, or a key or index on the wrong kind of value gives `JSON.null`. Navigation never traps.
+- A parsed object keeps its members in order, repeated keys included. Looking up a repeated key, and decoding a `Decodable` type, reads its first value.
+- Encoding an `Encodable` type that writes the same key twice keeps the last value.
+- Output is compact unless pretty printing is on. Pretty printing puts each member and element on its own line, indents with two spaces by default, and writes a space after each colon. Empty arrays and objects stay on one line.
+- With `sortKeys`, keys are ordered by their UTF-8 bytes, not by Unicode collation.
+- Strings are written as UTF-8 without escaping non-ASCII characters. Quote, backslash and control characters are escaped, with the short form where JSON has one and a lowercase hex escape otherwise. A slash is escaped only when `escapeSlashes` is true.
+- `JSON.decode(_:from:)` checks the whole text first, as strictly as the parser. Malformed text fails even inside members the type never reads. Members the type doesn't ask for are skipped and never built.
+- Decoding never converts between strings, booleans and numbers. An integer type accepts a number with no fractional part, however it is written, so `1e2` decodes as 100. A fractional number or one out of the target's range fails as corrupted data. A number too large for `Float` fails, and one too small rounds to zero.
+- When decoding meets null where a value is required, it reports a missing value. Any other wrong kind is a type mismatch.
+- An error thrown by your own `Decodable.init(from:)` or `Encodable.encode(to:)` that isn't a decoding or encoding error is kept as the underlying error, with the coding path where it happened.
+- Encoding refuses infinite and NaN floating-point values.
+- `JSON.ND.stream(_:)` yields one result per non-empty line. A malformed line yields a failure and the stream goes on. Carriage returns are dropped, and a last line without a line feed is still read.
+- `JSON.parse(collecting:)` reports any error from the byte source as `JSON.Error.unknown`.
+- A `JSON.Serializable` type that doesn't implement `JSON.Serializable.deserialize(events:)` builds the whole value and goes through `JSON.Serializable.deserialize(_:)`, so both paths give the same result.
+- `JSON.Foundation.Coder<Value>` uses `JSONEncoder` and `JSONDecoder` with their default settings. Parsing consumes the whole input. The underlying Foundation error is not kept.
