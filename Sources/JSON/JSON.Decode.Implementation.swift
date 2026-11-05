@@ -1,8 +1,8 @@
 public import ASCII
 @_spi(Unsafe) public import Array
-public import Buffer
+import Buffer
 public import Buffer_Linear
-public import Buffer_Linear_Primitive
+import Buffer_Linear_Primitive
 public import Byte
 public import Index
 public import Lexer
@@ -336,7 +336,7 @@ extension JSON.Decode.Implementation {
                     let count = stringScratch.count
                     return stringScratch.withUnsafeBufferPointer { src -> String in
                         String(unsafeUninitializedCapacity: count) { dst in
-                            if count > 0, let target = unsafe dst.baseAddress, let source = unsafe src.baseAddress {
+                            if count > 0, let target = dst.baseAddress, let source = src.baseAddress {
                                 unsafe target.update(from: source, count: count)
                             }
                             return count

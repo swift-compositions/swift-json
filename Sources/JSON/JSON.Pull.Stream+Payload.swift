@@ -9,7 +9,6 @@ public import Memory_Allocator
 public import Memory_Small
 public import RFC_8259
 public import Storage
-import Storage
 
 @usableFromInline
 typealias SmallByteArray = Array<Byte>.Small<24>
@@ -67,7 +66,7 @@ package func _lexString(
                 let count = scratch.count
                 return scratch.withUnsafeBufferPointer { src -> String in
                     String(unsafeUninitializedCapacity: count) { dst in
-                        if count > 0, let target = unsafe dst.baseAddress, let source = unsafe src.baseAddress {
+                        if count > 0, let target = dst.baseAddress, let source = src.baseAddress {
                             unsafe target.update(from: source, count: count)
                         }
                         return count
