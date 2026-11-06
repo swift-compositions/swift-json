@@ -101,21 +101,21 @@ let package = Package(
         .target(
             name: "JSON Foundation Integration",
             dependencies: [
-                "JSON",
+                .target(name: "JSON"),
                 .product(name: "Coder", package: "swift-coder"),
             ]
         ),
         .testTarget(
             name: "JSON Tests",
             dependencies: [
-                "JSON"
+                .target(name: "JSON")
             ]
         ),
         .testTarget(
             name: "JSON Foundation Integration Tests",
             dependencies: [
-                "JSON",
-                "JSON Foundation Integration",
+                .target(name: "JSON"),
+                .target(name: "JSON Foundation Integration"),
             ]
         ),
     ],
