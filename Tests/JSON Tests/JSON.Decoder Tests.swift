@@ -231,7 +231,9 @@ extension JSON.Decoder {
     }
 }
 
-extension JSON.Decoder {
+enum `JSON.Decoder Tests` {}
+
+extension `JSON.Decoder Tests` {
     @Suite
     struct Test {
 

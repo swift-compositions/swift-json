@@ -2,7 +2,9 @@ import Testing
 
 @testable import JSON
 
-extension JSON.Encode {
+enum `JSON.Encode Tests` {}
+
+extension `JSON.Encode Tests` {
     @Suite
     struct Test {
 

@@ -2,7 +2,7 @@ import Testing
 
 @testable import JSON
 
-extension JSON.Coder {
+extension `JSON.Coder Tests` {
     @Suite
     struct RoundTrip {
 

@@ -1,12 +1,14 @@
 import JSON
 import Testing
 
-extension JSON.ND {
+enum `JSON.ND Tests` {}
+
+extension `JSON.ND Tests` {
     @Suite
     struct Test {}
 }
 
-extension JSON.ND.Test {
+extension `JSON.ND Tests`.Test {
     struct Row: Codable, Equatable {
         var id: Int
     }

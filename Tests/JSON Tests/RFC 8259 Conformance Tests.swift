@@ -2,7 +2,9 @@ import Testing
 
 @testable import JSON
 
-extension RFC_8259 {
+enum `RFC_8259 Tests` {}
+
+extension `RFC_8259 Tests` {
     @Suite
     struct `RFC 8259 Conformance Tests` {
 

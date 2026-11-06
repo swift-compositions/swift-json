@@ -71,7 +71,9 @@ extension JSON.Encoder {
     }
 }
 
-extension JSON.Encoder {
+enum `JSON.Encoder Tests` {}
+
+extension `JSON.Encoder Tests` {
     @Suite
     struct Test {
 

@@ -2,7 +2,9 @@ import Testing
 
 @testable import JSON
 
-extension RFC_8259.Pull.Tokens {
+enum `RFC_8259.Pull.Tokens Tests` {}
+
+extension `RFC_8259.Pull.Tokens Tests` {
     @Suite
     struct Test {
 

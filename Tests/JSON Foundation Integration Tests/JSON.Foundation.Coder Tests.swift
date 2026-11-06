@@ -3,7 +3,9 @@ import Testing
 
 @testable import JSON_Foundation_Integration
 
-extension JSON.Foundation {
+enum `JSON.Foundation Tests` {}
+
+extension `JSON.Foundation Tests` {
     @Suite
     struct Test {
         @Test
