@@ -148,59 +148,61 @@ extension `JSON.Encoder Tests` {
                 }
             }
         }
+    }
+}
 
-        @Suite
-        struct RoundTrip {
+extension `JSON.Encoder Tests`.Test {
+    @Suite
+    struct RoundTrip {
 
-            @Test
-            func `round-trips primitives`() throws {
-                let value = Primitives(
-                    text: "swift",
-                    flag: false,
-                    signed: .min,
-                    unsigned: .max,
-                    fraction: 0.1,
-                    single: 0.1,
-                    absent: nil,
-                    present: "é\n\"quoted\""
-                )
-                #expect(try JSON(encoding: value).decode(Primitives.self) == value)
+        @Test
+        func `round-trips primitives`() throws {
+            let value = Primitives(
+                text: "swift",
+                flag: false,
+                signed: .min,
+                unsigned: .max,
+                fraction: 0.1,
+                single: 0.1,
+                absent: nil,
+                present: "é\n\"quoted\""
+            )
+            #expect(try JSON(encoding: value).decode(Primitives.self) == value)
+        }
+
+        @Test
+        func `round-trips every integer width at its bounds`() throws {
+            for value in [
+                Widths(int8: .min, int16: .min, int32: .min, int64: .min, uint8: .min, uint16: .min, uint32: .min, uint64: .min),
+                Widths(int8: .max, int16: .max, int32: .max, int64: .max, uint8: .max, uint16: .max, uint32: .max, uint64: .max),
+            ] {
+                #expect(try JSON(encoding: value).decode(Widths.self) == value)
             }
+        }
 
-            @Test
-            func `round-trips every integer width at its bounds`() throws {
-                for value in [
-                    Widths(int8: .min, int16: .min, int32: .min, int64: .min, uint8: .min, uint16: .min, uint32: .min, uint64: .min),
-                    Widths(int8: .max, int16: .max, int32: .max, int64: .max, uint8: .max, uint16: .max, uint32: .max, uint64: .max),
-                ] {
-                    #expect(try JSON(encoding: value).decode(Widths.self) == value)
-                }
-            }
+        @Test
+        func `round-trips nested structures`() throws {
+            let value = Outer(name: "outer", inner: Inner(value: 1), list: [Inner(value: 2)])
+            #expect(try JSON(encoding: value).decode(Outer.self) == value)
+        }
 
-            @Test
-            func `round-trips nested structures`() throws {
-                let value = Outer(name: "outer", inner: Inner(value: 1), list: [Inner(value: 2)])
-                #expect(try JSON(encoding: value).decode(Outer.self) == value)
-            }
+        @Test
+        func `round-trips enums with associated values`() throws {
+            let value: [Shape] = [.circle(radius: 1.5), .square(side: 2)]
+            #expect(try JSON(encoding: value).decode([Shape].self) == value)
+        }
 
-            @Test
-            func `round-trips enums with associated values`() throws {
-                let value: [Shape] = [.circle(radius: 1.5), .square(side: 2)]
-                #expect(try JSON(encoding: value).decode([Shape].self) == value)
-            }
+        @Test
+        func `round-trips dictionaries and optionals`() throws {
+            let value: [String: [Int?]] = ["a": [1, nil, 3], "b": []]
+            #expect(try JSON(encoding: value).decode([String: [Int?]].self) == value)
+        }
 
-            @Test
-            func `round-trips dictionaries and optionals`() throws {
-                let value: [String: [Int?]] = ["a": [1, nil, 3], "b": []]
-                #expect(try JSON(encoding: value).decode([String: [Int?]].self) == value)
-            }
-
-            @Test
-            func `round-trips through serialized text`() throws {
-                let value = Outer(name: "text", inner: Inner(value: -7), list: [])
-                let bytes = JSON.Encode.encode(try JSON(encoding: value).raw)
-                #expect(try JSON.parse(bytes.map(Byte.init(bitPattern:))).decode(Outer.self) == value)
-            }
+        @Test
+        func `round-trips through serialized text`() throws {
+            let value = Outer(name: "text", inner: Inner(value: -7), list: [])
+            let bytes = JSON.Encode.encode(try JSON(encoding: value).raw)
+            #expect(try JSON.parse(bytes.map(Byte.init(bitPattern:))).decode(Outer.self) == value)
         }
     }
 }

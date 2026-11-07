@@ -2,9 +2,17 @@ import Testing
 
 @testable import JSON
 
-@Suite
-struct `Number Original` {
+enum `Number Original Tests` {}
+
+extension `Number Original Tests` {
+    @Suite
+    struct `Number Original` {
+    }
+}
+
+extension `Number Original Tests`.`Number Original` {
     @Suite struct `Pull Stream` {}
+
     @Suite struct `Decode` {}
 }
 
@@ -33,7 +41,7 @@ private let twentyThreeDigits = String(repeating: "1", count: 23)
 private let twentyFourDigits = String(repeating: "1", count: 24)
 private let fortyDigits = String(repeating: "9", count: 40)
 
-extension `Number Original`.`Pull Stream` {
+extension `Number Original Tests`.`Number Original`.`Pull Stream` {
     @Test(arguments: [
         "0",
         "42",
@@ -87,7 +95,7 @@ extension `Number Original`.`Pull Stream` {
     }
 }
 
-extension `Number Original`.Decode {
+extension `Number Original Tests`.`Number Original`.Decode {
     @Test(arguments: [
         "0",
         "42",

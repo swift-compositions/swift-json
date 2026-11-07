@@ -543,143 +543,6 @@ extension `JSON.Decoder Tests` {
         }
 
         @Suite
-        struct Numeric {
-
-            @Test
-            func `signed boundaries convert exactly`() throws {
-                #expect(try JSON.parse("127").decode(Int8.self) == 127)
-                #expect(try JSON.parse("-128").decode(Int8.self) == -128)
-                #expect(try JSON.parse("32767").decode(Int16.self) == 32767)
-                #expect(
-                    try JSON.parse("9223372036854775807").decode(Int64.self)
-                        == Int64.max
-                )
-            }
-
-            @Test
-            func `unsigned boundaries convert exactly`() throws {
-                #expect(try JSON.parse("255").decode(UInt8.self) == 255)
-                #expect(try JSON.parse("0").decode(UInt8.self) == 0)
-                #expect(
-                    try JSON.parse("18446744073709551615").decode(UInt64.self)
-                        == UInt64.max
-                )
-            }
-
-            @Test
-            func `an out-of-range magnitude is refused`() throws {
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("128").decode(Int8.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("256").decode(UInt8.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("-129").decode(Int8.self)
-                }
-            }
-
-            @Test
-            func `a negative value is never admitted as unsigned`() throws {
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("-1").decode(UInt.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("-1").decode(UInt8.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("-1").decode(UInt64.self)
-                }
-            }
-
-            @Test
-            func `a fractional value is never truncated into an integer`() throws {
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("1.5").decode(Int.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("-0.25").decode(Int.self)
-                }
-            }
-
-            @Test
-            func `an integral value written with an exponent decodes as an integer`() throws {
-
-                #expect(try JSON.parse("1e2").decode(Int.self) == 100)
-            }
-
-            @Test
-            func `floating-point values decode from every numeric arm`() throws {
-                #expect(try JSON.parse("1.5").decode(Double.self) == 1.5)
-                #expect(try JSON.parse("3").decode(Double.self) == 3.0)
-                #expect(try JSON.parse("-2.25").decode(Float.self) == -2.25)
-                #expect(try JSON.parse("0.5").decode(Float.self) == 0.5)
-            }
-
-            @Test
-            func `a finite value too large for Float is refused`() throws {
-
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("1e300").decode(Float.self)
-                }
-            }
-
-            @Test
-            func `a finite negative value too large in magnitude for Float is refused`() throws {
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("-1e300").decode(Float.self)
-                }
-            }
-
-            @Test
-            func `the largest finite Float decodes`() throws {
-                let value = try JSON.parse("3.4028234663852886e38").decode(Float.self)
-                #expect(value.isFinite)
-                #expect(value == Float.greatestFiniteMagnitude)
-            }
-
-            @Test
-            func `finite rounding that stays finite is admitted`() throws {
-
-                let rounded = try JSON.parse("0.1").decode(Float.self)
-                #expect(rounded.isFinite)
-                #expect(rounded == Float(0.1))
-
-                #expect(try JSON.parse("1e300").decode(Double.self) == 1e300)
-            }
-
-            @Test
-            func `underflow to zero remains ordinary rounding`() throws {
-                let value = try JSON.parse("1e-300").decode(Float.self)
-                #expect(value.isFinite)
-                #expect(value == 0)
-            }
-
-            @Test
-            func `strings and booleans are never coerced into numbers`() throws {
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse(#""12""#).decode(Int.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("true").decode(Int.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("true").decode(Double.self)
-                }
-            }
-
-            @Test
-            func `numbers are never coerced into strings or booleans`() throws {
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("1").decode(Bool.self)
-                }
-                #expect(throws: DecodingError.self) {
-                    try JSON.parse("1").decode(String.self)
-                }
-            }
-        }
-
-        @Suite
         struct Integration {
 
             @Test
@@ -816,6 +679,145 @@ extension `JSON.Decoder Tests` {
                   ]
                 }
                 """
+        }
+    }
+}
+
+extension `JSON.Decoder Tests`.Test {
+    @Suite
+    struct Numeric {
+
+        @Test
+        func `signed boundaries convert exactly`() throws {
+            #expect(try JSON.parse("127").decode(Int8.self) == 127)
+            #expect(try JSON.parse("-128").decode(Int8.self) == -128)
+            #expect(try JSON.parse("32767").decode(Int16.self) == 32767)
+            #expect(
+                try JSON.parse("9223372036854775807").decode(Int64.self)
+                    == Int64.max
+            )
+        }
+
+        @Test
+        func `unsigned boundaries convert exactly`() throws {
+            #expect(try JSON.parse("255").decode(UInt8.self) == 255)
+            #expect(try JSON.parse("0").decode(UInt8.self) == 0)
+            #expect(
+                try JSON.parse("18446744073709551615").decode(UInt64.self)
+                    == UInt64.max
+            )
+        }
+
+        @Test
+        func `an out-of-range magnitude is refused`() throws {
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("128").decode(Int8.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("256").decode(UInt8.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("-129").decode(Int8.self)
+            }
+        }
+
+        @Test
+        func `a negative value is never admitted as unsigned`() throws {
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("-1").decode(UInt.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("-1").decode(UInt8.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("-1").decode(UInt64.self)
+            }
+        }
+
+        @Test
+        func `a fractional value is never truncated into an integer`() throws {
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("1.5").decode(Int.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("-0.25").decode(Int.self)
+            }
+        }
+
+        @Test
+        func `an integral value written with an exponent decodes as an integer`() throws {
+
+            #expect(try JSON.parse("1e2").decode(Int.self) == 100)
+        }
+
+        @Test
+        func `floating-point values decode from every numeric arm`() throws {
+            #expect(try JSON.parse("1.5").decode(Double.self) == 1.5)
+            #expect(try JSON.parse("3").decode(Double.self) == 3.0)
+            #expect(try JSON.parse("-2.25").decode(Float.self) == -2.25)
+            #expect(try JSON.parse("0.5").decode(Float.self) == 0.5)
+        }
+
+        @Test
+        func `a finite value too large for Float is refused`() throws {
+
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("1e300").decode(Float.self)
+            }
+        }
+
+        @Test
+        func `a finite negative value too large in magnitude for Float is refused`() throws {
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("-1e300").decode(Float.self)
+            }
+        }
+
+        @Test
+        func `the largest finite Float decodes`() throws {
+            let value = try JSON.parse("3.4028234663852886e38").decode(Float.self)
+            #expect(value.isFinite)
+            #expect(value == Float.greatestFiniteMagnitude)
+        }
+
+        @Test
+        func `finite rounding that stays finite is admitted`() throws {
+
+            let rounded = try JSON.parse("0.1").decode(Float.self)
+            #expect(rounded.isFinite)
+            #expect(rounded == Float(0.1))
+
+            #expect(try JSON.parse("1e300").decode(Double.self) == 1e300)
+        }
+
+        @Test
+        func `underflow to zero remains ordinary rounding`() throws {
+            let value = try JSON.parse("1e-300").decode(Float.self)
+            #expect(value.isFinite)
+            #expect(value == 0)
+        }
+
+        @Test
+        func `strings and booleans are never coerced into numbers`() throws {
+            #expect(throws: DecodingError.self) {
+                try JSON.parse(#""12""#).decode(Int.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("true").decode(Int.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("true").decode(Double.self)
+            }
+        }
+
+        @Test
+        func `numbers are never coerced into strings or booleans`() throws {
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("1").decode(Bool.self)
+            }
+            #expect(throws: DecodingError.self) {
+                try JSON.parse("1").decode(String.self)
+            }
         }
     }
 }
