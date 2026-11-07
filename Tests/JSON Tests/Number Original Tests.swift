@@ -12,7 +12,7 @@ private func pullNumber(_ text: String) throws -> RFC_8259.Number {
     let bytes: [Byte] = text.utf8.map(Byte.init(bitPattern:))
     return try bytes.withUnsafeBufferPointer {
         (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) -> RFC_8259.Number in
-        let span = buf.span
+        let span = unsafe buf.span
         var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
         _ = try stream.next()
         return try stream.currentNumber()

@@ -13,7 +13,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "{}".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .objectStart)
                 #expect(try stream.next() == .objectEnd)
@@ -26,7 +26,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "[]".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .arrayStart)
                 #expect(try stream.next() == .arrayEnd)
@@ -39,7 +39,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"{"a":1,"b":2}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .objectStart)
                 #expect(try stream.next() == .string)
@@ -62,7 +62,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "null".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .null)
                 #expect(try stream.next() == nil)
@@ -74,7 +74,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "true".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .`true`)
             }
@@ -85,7 +85,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "false".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .`false`)
             }
@@ -96,7 +96,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #""hello""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .string)
                 #expect(try stream.currentString() == "hello")
@@ -108,7 +108,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #""a\nb\tc\"d""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .string)
                 #expect(try stream.currentString() == "a\nb\tc\"d")
@@ -120,7 +120,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #""é""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .string)
                 #expect(try stream.currentString() == "é")
@@ -133,7 +133,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #""😀""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .string)
                 #expect(try stream.currentString() == "😀")
@@ -145,7 +145,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "42".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .number)
                 #expect(try stream.currentNumber().int64 == 42)
@@ -157,7 +157,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "-123".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .number)
                 #expect(try stream.currentNumber().int64 == -123)
@@ -169,7 +169,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "3.14".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .number)
                 #expect(try stream.currentNumber().double == 3.14)
@@ -181,7 +181,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "1.5e10".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .number)
                 #expect(try stream.currentNumber().double == 1.5e10)
@@ -192,7 +192,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
         func `isPristine true at init`() throws {
             let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
-                let span = buf.span
+                let span = unsafe buf.span
                 let stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(stream.isPristine == true)
             }
@@ -203,7 +203,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(stream.isPristine == true)
                 _ = try stream.next()
@@ -216,7 +216,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"{"a":1}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(stream.isPristine == true)
                 try stream.skip()
@@ -229,7 +229,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #""skip me",42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 try stream.skip()
                 #expect(try stream.next() == .comma)
@@ -243,7 +243,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"3.14,"after""#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 try stream.skip()
                 #expect(try stream.next() == .comma)
@@ -257,7 +257,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"null,true,false,42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 try stream.skip()
                 #expect(try stream.next() == .comma)
@@ -275,7 +275,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"{"nested":{"a":1,"b":[1,2,3]}},42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 try stream.skip()
                 #expect(try stream.next() == .comma)
@@ -290,7 +290,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"{"a":1,"b":2,"c":3},42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .objectStart)
 
@@ -322,7 +322,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"[[1,2],[3,[4,5]]],99"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 try stream.skip()
                 #expect(try stream.next() == .comma)
@@ -336,7 +336,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #""skip \"this\" too",42"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 try stream.skip()
                 #expect(try stream.next() == .comma)
@@ -349,7 +349,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
         func `depth exceeded throws`() throws {
             let bytes: [Byte] = "[[[[[]]]]]".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span, limit: 3)
                 do {
                     _ = try stream.next()
@@ -373,7 +373,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
         func `malformed null throws`() throws {
             let bytes: [Byte] = "nulX".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 do {
                     _ = try stream.next()
@@ -395,7 +395,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
 
             let bytes: [Byte] = "007".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 do {
                     _ = try stream.next()
@@ -417,7 +417,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
         func `unterminated string throws`() throws {
             let bytes: [Byte] = #""unterminated"#.utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 do {
                     _ = try stream.next()
@@ -439,7 +439,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
         func `unknown byte throws`() throws {
             let bytes: [Byte] = "@".utf8.map(Byte.init(bitPattern:))
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 do {
                     _ = try stream.next()
@@ -465,7 +465,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "   \n\t  null".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .null)
             }
@@ -476,7 +476,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = #"{   "key"   :   42   }"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == .objectStart)
                 #expect(try stream.next() == .string)
@@ -493,7 +493,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = []
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == nil)
             }
@@ -504,7 +504,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
             let bytes: [Byte] = "   \n   ".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 #expect(try stream.next() == nil)
             }
@@ -515,7 +515,7 @@ extension `RFC_8259.Pull.Tokens Tests` {
 
             let bytes: [Byte] = [Byte(bitPattern: 0xFF)]
             bytes.withUnsafeBufferPointer { (buf: UnsafeBufferPointer<Byte>) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 do {
                     _ = try stream.next()

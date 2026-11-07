@@ -13,7 +13,7 @@ extension `JSON.Assemble Tests` {
             let bytes: [Byte] = #"{"name":"alice","age":30,"tags":["x","y"]}"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 let unforkedBefore: Bool = stream.isPristine
                 #expect(unforkedBefore)
@@ -35,7 +35,7 @@ extension `JSON.Assemble Tests` {
             let bytes: [Byte] = #"[1,2,3]"#.utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 let firstToken = try stream.next()
                 #expect(firstToken == .arrayStart)
@@ -51,7 +51,7 @@ extension `JSON.Assemble Tests` {
             let bytes: [Byte] = "null".utf8.map(Byte.init(bitPattern:))
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 let value = try Lexer.Pull.Assemble.from(&stream, strategy: JSON.Assemble.self)
                 #expect(value.isNull)
@@ -65,7 +65,7 @@ extension `JSON.Assemble Tests` {
             let direct = try JSON.Decode.parse(bytes)
             try bytes.withUnsafeBufferPointer {
                 (buf: UnsafeBufferPointer<Byte>) throws(RFC_8259.Error) in
-                let span = buf.span
+                let span = unsafe buf.span
                 var stream = Lexer.Pull.Stream<RFC_8259.Pull.Tokens>(span)
                 let assembled = try Lexer.Pull.Assemble.from(&stream, strategy: JSON.Assemble.self)
                 #expect(direct == assembled)
