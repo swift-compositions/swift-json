@@ -1,4 +1,4 @@
-public import RFC_8259
+import RFC_8259
 
 
 extension JSON.Encode {
