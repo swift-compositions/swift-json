@@ -54,16 +54,6 @@ extension JSON.Parse {
 }
 
 extension JSON {
-
-    public struct Prepared: Sendable {
-
-        public let maxDepth: Int
-
-        @usableFromInline
-        internal init(maxDepth: Int) {
-            self.maxDepth = maxDepth
-        }
-    }
 }
 
 extension JSON.Prepared {
@@ -91,16 +81,6 @@ extension JSON.Prepared {
 }
 
 extension JSON {
-
-    public struct Located: Sendable {
-
-        public let maxDepth: Int
-
-        @usableFromInline
-        internal init(maxDepth: Int) {
-            self.maxDepth = maxDepth
-        }
-    }
 }
 
 extension JSON.Located {

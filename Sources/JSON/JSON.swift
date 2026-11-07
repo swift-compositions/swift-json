@@ -224,3 +224,72 @@ extension JSON {
         JSON.Encode.encode(RFC_8259.Value(try JSON(encoding: value)), options: options).map { Byte($0) }
     }
 }
+
+extension JSON {
+
+    public func decode<T: Swift.Decodable>(
+        _ type: T.Type = T.self
+    ) throws(Swift.DecodingError) -> T {
+        try JSON.Decoder(source: .value(raw), codingPath: []).decoded(type)
+    }
+}
+
+extension JSON {
+
+    public init<T: Swift.Encodable>(
+        encoding value: T
+    ) throws(Swift.EncodingError) {
+        let node = JSON.Encoder.Node()
+        try JSON.Encoder(node: node, codingPath: []).encoded(value)
+        self.init(node.value)
+    }
+}
+
+extension JSON: ExpressibleByNilLiteral {
+    @inlinable
+    public init(nilLiteral: ()) {
+        self = .null
+    }
+}
+
+extension JSON: ExpressibleByBooleanLiteral {
+    @inlinable
+    public init(booleanLiteral value: Bool) {
+        self.raw = .bool(value)
+    }
+}
+
+extension JSON: ExpressibleByIntegerLiteral {
+    @inlinable
+    public init(integerLiteral value: Int) {
+        self.raw = .number(RFC_8259.Number(value))
+    }
+}
+
+extension JSON: ExpressibleByFloatLiteral {
+    @inlinable
+    public init(floatLiteral value: Double) {
+        self.raw = .number(RFC_8259.Number(value))
+    }
+}
+
+extension JSON: ExpressibleByStringLiteral {
+    @inlinable
+    public init(stringLiteral value: String) {
+        self.raw = .string(value)
+    }
+}
+
+extension JSON: ExpressibleByArrayLiteral {
+    @inlinable
+    public init(arrayLiteral elements: JSON...) {
+        self.raw = .array(RFC_8259.Array(elements.map { $0.raw }))
+    }
+}
+
+extension JSON: ExpressibleByDictionaryLiteral {
+    @inlinable
+    public init(dictionaryLiteral elements: (String, JSON)...) {
+        self.raw = .object(RFC_8259.Object(elements.map { ($0.0, $0.1.raw) }))
+    }
+}

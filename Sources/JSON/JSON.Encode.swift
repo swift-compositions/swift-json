@@ -6,11 +6,6 @@ extension JSON {
 }
 
 extension JSON.Encode {
-
-    public enum Error: Swift.Error, Sendable, Hashable {
-
-        case depthExceeded(maxDepth: Int)
-    }
 }
 
 extension JSON.Encode.Error: CustomStringConvertible {
