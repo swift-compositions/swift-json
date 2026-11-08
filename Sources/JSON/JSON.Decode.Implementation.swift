@@ -69,7 +69,7 @@ extension JSON.Decode.Implementation {
 extension JSON.Decode.Implementation {
 
     @inlinable
-    package func currentPosition() -> RFC_8259.Position {
+    func currentPosition() -> RFC_8259.Position {
         let pos = scanner.position
         return RFC_8259.Position(offset: pos, location: scanner.location(at: pos))
     }
@@ -84,7 +84,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func parseValue() throws(RFC_8259.Error) -> RFC_8259.Value {
+    mutating func parseValue() throws(RFC_8259.Error) -> RFC_8259.Value {
         skipWhitespace()
 
         guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
@@ -134,7 +134,7 @@ extension JSON.Decode.Implementation {
 extension JSON.Decode.Implementation {
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func parseArray() throws(RFC_8259.Error) -> RFC_8259.Value {
+    mutating func parseArray() throws(RFC_8259.Error) -> RFC_8259.Value {
         depth += 1
         if depth > maxDepth {
             throw .depthExceeded(at: currentPosition(), limit: maxDepth)
@@ -183,7 +183,7 @@ extension JSON.Decode.Implementation {
 extension JSON.Decode.Implementation {
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func parseObject() throws(RFC_8259.Error) -> RFC_8259.Value {
+    mutating func parseObject() throws(RFC_8259.Error) -> RFC_8259.Value {
         depth += 1
         if depth > maxDepth {
             throw .depthExceeded(at: currentPosition(), limit: maxDepth)
@@ -228,7 +228,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func parseMember() throws(RFC_8259.Error) -> (
+    mutating func parseMember() throws(RFC_8259.Error) -> (
         key: String, value: RFC_8259.Value
     ) {
         skipWhitespace()
@@ -267,7 +267,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func skipWhitespace() {
+    mutating func skipWhitespace() {
         while let byte = scanner.peek() {
 
             switch byte.bitPattern {
@@ -285,7 +285,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func expectLiteral(_ expected: [ASCII.Code]) throws(RFC_8259.Error) {
+    mutating func expectLiteral(_ expected: [ASCII.Code]) throws(RFC_8259.Error) {
         let startCursor = scanner.position
         for expectedCode in expected {
 
@@ -311,7 +311,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func lexStringValue() throws(RFC_8259.Error) -> String {
+    mutating func lexStringValue() throws(RFC_8259.Error) -> String {
         let startCursor = scanner.position
 
         scanner.advance()
@@ -371,7 +371,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func lexEscapeSequence() throws(RFC_8259.Error) -> [UInt8] {
+    mutating func lexEscapeSequence() throws(RFC_8259.Error) -> [UInt8] {
 
         guard let code = scanner.peek().map(ASCII.Code.init(unchecked:)) else {
             throw .unexpectedEndOfInput(at: currentPosition(), expected: .value)
@@ -397,7 +397,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func lexUnicodeEscape() throws(RFC_8259.Error) -> [UInt8] {
+    mutating func lexUnicodeEscape() throws(RFC_8259.Error) -> [UInt8] {
         var hex: [ASCII.Code] = []
         hex.reserveCapacity(4)
 
@@ -456,7 +456,7 @@ extension JSON.Decode.Implementation {
     }
 
     @inlinable
-    package func parseHex(_ codes: [ASCII.Code]) -> UInt32? {
+    func parseHex(_ codes: [ASCII.Code]) -> UInt32? {
         guard codes.count == 4 else { return nil }
         var result: UInt32 = 0
         for code in codes {
@@ -471,7 +471,7 @@ extension JSON.Decode.Implementation {
 
     @inlinable
     @_lifetime(self: copy self)
-    package mutating func lexNumberValue() throws(RFC_8259.Error) -> RFC_8259.Number {
+    mutating func lexNumberValue() throws(RFC_8259.Error) -> RFC_8259.Number {
         let startCursor = scanner.position
         var bytes = SmallByteArray(initialCapacity: Index<Byte>.Count(UInt(24)))
 

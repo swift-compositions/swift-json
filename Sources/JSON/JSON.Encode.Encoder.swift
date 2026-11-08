@@ -86,7 +86,7 @@ extension JSON.Encode.Encoder {
     }
 
     @inlinable
-    package mutating func encodeString<Buffer: Swift.RangeReplaceableCollection>(
+    mutating func encodeString<Buffer: Swift.RangeReplaceableCollection>(
         _ string: String,
         into buffer: inout Buffer
     ) where Buffer.Element == UInt8 {
@@ -191,7 +191,7 @@ extension JSON.Encode.Encoder {
     }
 
     @inlinable
-    package func encodeHex<Buffer: Swift.RangeReplaceableCollection>(
+    func encodeHex<Buffer: Swift.RangeReplaceableCollection>(
         _ value: UInt16,
         into buffer: inout Buffer
     ) where Buffer.Element == UInt8 {
@@ -204,7 +204,7 @@ extension JSON.Encode.Encoder {
     }
 
     @inlinable
-    package mutating func encodeArray<Buffer: Swift.RangeReplaceableCollection>(
+    mutating func encodeArray<Buffer: Swift.RangeReplaceableCollection>(
         _ array: RFC_8259.Array,
         into buffer: inout Buffer
     ) throws(JSON.Encode.Error) where Buffer.Element == UInt8 {
@@ -241,7 +241,7 @@ extension JSON.Encode.Encoder {
     }
 
     @inlinable
-    package mutating func encodeObject<Buffer: Swift.RangeReplaceableCollection>(
+    mutating func encodeObject<Buffer: Swift.RangeReplaceableCollection>(
         _ object: RFC_8259.Object,
         into buffer: inout Buffer
     ) throws(JSON.Encode.Error) where Buffer.Element == UInt8 {
@@ -297,7 +297,7 @@ extension JSON.Encode.Encoder {
     }
 
     @inlinable
-    package func appendIndent<Buffer: Swift.RangeReplaceableCollection>(
+    func appendIndent<Buffer: Swift.RangeReplaceableCollection>(
         into buffer: inout Buffer
     ) where Buffer.Element == UInt8 {
 

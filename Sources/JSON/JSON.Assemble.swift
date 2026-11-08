@@ -35,7 +35,7 @@ extension JSON.Assemble: Lexer.Pull.Assemble.Strategy {
     }
 
     @inlinable
-    package static func buildValue(
+    static func buildValue(
         forToken token: RFC_8259.Token.Kind,
         events: inout Lexer.Pull.Stream<RFC_8259.Pull.Tokens>
     ) throws(RFC_8259.Error) -> RFC_8259.Value {
@@ -73,7 +73,7 @@ extension JSON.Assemble: Lexer.Pull.Assemble.Strategy {
     }
 
     @inlinable
-    package static func buildObject(
+    static func buildObject(
         events: inout Lexer.Pull.Stream<RFC_8259.Pull.Tokens>
     ) throws(RFC_8259.Error) -> RFC_8259.Value {
         var members: [(key: String, value: RFC_8259.Value)] = []

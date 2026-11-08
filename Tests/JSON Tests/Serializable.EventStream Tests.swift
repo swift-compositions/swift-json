@@ -114,7 +114,7 @@ struct `Serializable EventStream Tests` {
         #expect(Int(result["number"]) == 42)
     }
 
-    struct FooDefault: JSON.Serializable {
+    fileprivate struct FooDefault: JSON.Serializable {
         let name: String
         let age: Int
 
@@ -132,7 +132,7 @@ struct `Serializable EventStream Tests` {
         #expect(viaTree.age == viaEvents.age)
     }
 
-    struct FooEventGrain: JSON.Serializable {
+    fileprivate struct FooEventGrain: JSON.Serializable {
         let name: String
     }
 
