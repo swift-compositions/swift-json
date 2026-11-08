@@ -1,6 +1,5 @@
 import RFC_8259
 
-
 extension JSON.Encoder.Node {
     internal enum State {
         case empty

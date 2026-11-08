@@ -2,11 +2,12 @@ extension String {
 
     @inlinable
     public init(_ json: JSON) {
-        self = if case .string(let value) = json.raw {
-            value
-        } else {
-            ""
-        }
+        self =
+            if case .string(let value) = json.raw {
+                value
+            } else {
+                ""
+            }
     }
 }
 

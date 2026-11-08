@@ -1,6 +1,5 @@
 import RFC_8259
 
-
 extension JSON {
     public struct Located: Sendable {
 
