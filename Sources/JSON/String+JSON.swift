@@ -2,10 +2,10 @@ extension String {
 
     @inlinable
     public init(_ json: JSON) {
-        if case .string(let value) = json.raw {
-            self = value
+        self = if case .string(let value) = json.raw {
+            value
         } else {
-            self = ""
+            ""
         }
     }
 }
