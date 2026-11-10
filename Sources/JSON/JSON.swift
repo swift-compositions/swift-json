@@ -164,10 +164,10 @@ extension JSON {
 
     @inlinable
     public func serialize(pretty: Bool = false, sortKeys: Bool = false) -> String {
-        let options = JSON.Encode.Options(prettyPrint: pretty, sortKeys: sortKeys)
+        let options = RFC_8259.Encode.Options(prettyPrint: pretty, sortKeys: sortKeys)
         var bytes: [UInt8] = []
-        var encoder = JSON.Encode.Encoder(options: options)
-        do throws(JSON.Encode.Error) {
+        var encoder = RFC_8259.Encode.Encoder(options: options)
+        do throws(RFC_8259.Encode.Error) {
             try encoder.encode(raw, into: &bytes)
         } catch {
             preconditionFailure(
@@ -179,10 +179,10 @@ extension JSON {
 
     @inlinable
     public func serialize(pretty: Bool = false, sortKeys: Bool = false, as: [UInt8].Type) -> [UInt8] {
-        let options = JSON.Encode.Options(prettyPrint: pretty, sortKeys: sortKeys)
+        let options = RFC_8259.Encode.Options(prettyPrint: pretty, sortKeys: sortKeys)
         var bytes: [UInt8] = []
-        var encoder = JSON.Encode.Encoder(options: options)
-        do throws(JSON.Encode.Error) {
+        var encoder = RFC_8259.Encode.Encoder(options: options)
+        do throws(RFC_8259.Encode.Error) {
             try encoder.encode(raw, into: &bytes)
         } catch {
             preconditionFailure(
@@ -219,9 +219,9 @@ extension JSON {
     /// `value` encoded as JSON text, in one step.
     public static func encode<T: Swift.Encodable>(
         _ value: T,
-        options: JSON.Encode.Options = JSON.Encode.Options()
+        options: RFC_8259.Encode.Options = RFC_8259.Encode.Options()
     ) throws(Swift.EncodingError) -> [Byte] {
-        JSON.Encode.encode(RFC_8259.Value(try JSON(encoding: value)), options: options).map { Byte($0) }
+        RFC_8259.Encode.encode(RFC_8259.Value(try JSON(encoding: value)), options: options).map { Byte($0) }
     }
 }
 

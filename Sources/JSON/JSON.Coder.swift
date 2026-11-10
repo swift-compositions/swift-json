@@ -8,12 +8,12 @@ extension JSON {
 
         public let maxDepth: Int
 
-        public let encodeOptions: JSON.Encode.Options
+        public let encodeOptions: RFC_8259.Encode.Options
 
         @inlinable
         public init(
             maxDepth: Int = 512,
-            encodeOptions: JSON.Encode.Options = JSON.Encode.Options()
+            encodeOptions: RFC_8259.Encode.Options = RFC_8259.Encode.Options()
         ) {
             self.maxDepth = maxDepth
             self.encodeOptions = encodeOptions
@@ -26,7 +26,7 @@ extension JSON.Coder: Coder::Coding {
     public typealias Input = Swift.Span<Byte>
     public typealias Buffer = [UInt8]
     public typealias Output = RFC_8259.Value
-    public typealias Failure = Either<RFC_8259.Error, JSON.Encode.Error>
+    public typealias Failure = Either<RFC_8259.Error, RFC_8259.Encode.Error>
 
     @inlinable
     public func parse(
@@ -48,8 +48,8 @@ extension JSON.Coder: Coder::Coding {
         _ output: RFC_8259.Value,
         into buffer: inout [UInt8]
     ) throws(Failure) {
-        var encoder = JSON.Encode.Encoder(options: encodeOptions)
-        do throws(JSON.Encode.Error) {
+        var encoder = RFC_8259.Encode.Encoder(options: encodeOptions)
+        do throws(RFC_8259.Encode.Error) {
             try encoder.encode(output, into: &buffer)
         } catch {
             throw .right(error)

@@ -1,6 +1,6 @@
 # swift-json
 
-Use this package when you read or write JSON text in Swift and want typed errors and strict RFC 8259 parsing. Start from `JSON` to build, parse, navigate and serialize values. To decode your `Decodable` types straight from bytes, use `JSON.decode(_:from:)`, and to encode `Encodable` types, `JSON.encode(_:options:)`. Conform to `JSON.Serializable` to map your own types without `Codable`. For newline-delimited JSON, use `JSON.ND`. If you only need the RFC 8259 value and grammar types, use swift-rfc-8259, which this package re-exports. If you want Foundation's `JSONEncoder` and `JSONDecoder` behind the same coder shape, add the `JSON Foundation Integration` product and use `JSON.Foundation.Coder<Value>`.
+Use this package when you read or write JSON text in Swift and want typed errors and strict RFC 8259 parsing. Start from `JSON` to build, parse, navigate and serialize values. To decode your `Decodable` types straight from bytes, use `JSON.decode(_:from:)`, and to encode `Encodable` types, `JSON.encode(_:options:)`. Conform to `JSON.Serializable` to map your own types without `Codable`. For newline-delimited JSON, use `JSON.ND`. If you only need the RFC 8259 value types and the plain reader and writer of JSON text, `RFC_8259.Decode` and `RFC_8259.Encode`, use swift-rfc-8259, which this package re-exports and reads and writes text with. If you want Foundation's `JSONEncoder` and `JSONDecoder` behind the same coder shape, add the `JSON Foundation Integration` product and use `JSON.Foundation.Coder<Value>`.
 
 ## Laws
 

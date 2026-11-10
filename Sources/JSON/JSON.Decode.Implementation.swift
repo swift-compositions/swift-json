@@ -1,5 +1,6 @@
 public import ASCII
 @_spi(Unsafe) public import Array
+public import Array_Small_Primitive
 import Buffer
 public import Buffer_Linear
 import Buffer_Linear_Primitive
@@ -10,6 +11,9 @@ public import Memory_Allocator
 public import Memory_Small
 public import RFC_8259
 public import Storage
+
+@usableFromInline
+typealias SmallByteArray = Array<Byte>.Small<24>
 
 extension JSON.Decode {
 
