@@ -123,7 +123,7 @@ extension `JSON.Encode Tests` {
         @Test
         func `Encode with sorted keys`() {
             let value: RFC_8259.Value = ["b": 2, "a": 1]
-            let options = JSON.Encode.Options(sortKeys: true)
+            let options = RFC_8259.Encode.Options(sortKeys: true)
             let bytes = JSON.Encode.encode(value, options: options)
             #expect(String(decoding: bytes, as: UTF8.self) == "{\"a\":1,\"b\":2}")
         }
@@ -131,7 +131,7 @@ extension `JSON.Encode Tests` {
         @Test
         func `Encode with escaped slashes`() {
             let value: RFC_8259.Value = "http://example.com"
-            let options = JSON.Encode.Options(escapeSlashes: true)
+            let options = RFC_8259.Encode.Options(escapeSlashes: true)
             let bytes = JSON.Encode.encode(value, options: options)
             #expect(String(decoding: bytes, as: UTF8.self) == "\"http:\\/\\/example.com\"")
         }
@@ -139,7 +139,7 @@ extension `JSON.Encode Tests` {
         @Test
         func `Encode pretty printed array`() throws {
             let value = try JSON.Decode.parse("[1, 2]")
-            let options = JSON.Encode.Options(prettyPrint: true)
+            let options = RFC_8259.Encode.Options(prettyPrint: true)
             let bytes = JSON.Encode.encode(value, options: options)
             let expected = """
                 [
@@ -153,7 +153,7 @@ extension `JSON.Encode Tests` {
         @Test
         func `Encode pretty printed object`() {
             let value: RFC_8259.Value = ["key": "value"]
-            let options = JSON.Encode.Options(prettyPrint: true)
+            let options = RFC_8259.Encode.Options(prettyPrint: true)
             let bytes = JSON.Encode.encode(value, options: options)
             let expected = """
                 {
@@ -182,7 +182,7 @@ extension `JSON.Encode Tests` {
         func `Sort keys by UTF-8 bytes, not Unicode collation`() {
 
             let value: RFC_8259.Value = ["é": 1, "e": 2, "f": 3]
-            let options = JSON.Encode.Options(sortKeys: true)
+            let options = RFC_8259.Encode.Options(sortKeys: true)
             let bytes = JSON.Encode.encode(value, options: options)
             let result = String(decoding: bytes, as: UTF8.self)
 
@@ -193,7 +193,7 @@ extension `JSON.Encode Tests` {
         func `Sort keys with emoji by UTF-8 bytes`() {
 
             let value: RFC_8259.Value = ["a": 1, "😀": 2, "z": 3]
-            let options = JSON.Encode.Options(sortKeys: true)
+            let options = RFC_8259.Encode.Options(sortKeys: true)
             let bytes = JSON.Encode.encode(value, options: options)
             let result = String(decoding: bytes, as: UTF8.self)
 
@@ -215,7 +215,7 @@ extension `JSON.Encode Tests` {
     @Suite struct `End-user interface` {
         @Test func `JSON.Encode writes what the spec writes, with sorted keys and escaped slashes`() throws {
             let value = try JSON.Decode.parse(#"{"b":"a/b","a":[1,true,null]}"#)
-            let options = JSON.Encode.Options(sortKeys: true, escapeSlashes: true)
+            let options = RFC_8259.Encode.Options(sortKeys: true, escapeSlashes: true)
             let bytes = JSON.Encode.encode(value, options: options)
             #expect(String(decoding: bytes, as: UTF8.self) == #"{"a":[1,true,null],"b":"a\/b"}"#)
             #expect(bytes == RFC_8259.Encode.encode(value, options: options))

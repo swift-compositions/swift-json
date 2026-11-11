@@ -7,12 +7,10 @@ extension JSON {
 
 extension JSON.Encode {
 
-    public typealias Options = RFC_8259.Encode.Options
-
     @inlinable
     public static func encode(
         _ value: RFC_8259.Value,
-        options: Options = Options()
+        options: RFC_8259.Encode.Options = RFC_8259.Encode.Options()
     ) -> [UInt8] {
         RFC_8259.Encode.encode(value, options: options)
     }
@@ -21,7 +19,7 @@ extension JSON.Encode {
     public static func encode<Buffer: Swift.RangeReplaceableCollection>(
         _ value: RFC_8259.Value,
         into buffer: inout Buffer,
-        options: Options = Options()
+        options: RFC_8259.Encode.Options = RFC_8259.Encode.Options()
     ) where Buffer.Element == UInt8 {
         RFC_8259.Encode.encode(value, into: &buffer, options: options)
     }
